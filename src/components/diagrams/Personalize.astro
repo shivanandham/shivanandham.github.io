@@ -1,0 +1,33 @@
+---
+import Flow from '../Flow.astro';
+---
+
+<Flow
+  title="AWS Personalize recommendation pipeline"
+  caption="Training data flows Redshift → S3 → Personalize dataset imports; live events arrive through Kinesis Firehose. Schedules run daily incremental refreshes and full retrains. Serving goes through Lambda, with a business-rule layer applied on top of the model output and GrowthBook deciding A/B variants."
+  width={720}
+  height={430}
+  nodes={[
+    { id: 'redshift', kind: 'store', x: 20, y: 40, w: 160, lines: ['Redshift', 'warehouse'] },
+    { id: 's3', kind: 'store', x: 240, y: 40, w: 160, lines: ['S3', 'dataset exports'] },
+    { id: 'pers', kind: 'ext', x: 460, y: 36, w: 240, h: 62, lines: ['AWS Personalize', 'datasets · solutions · campaigns'] },
+    { id: 'events', kind: 'user', x: 20, y: 150, w: 160, lines: ['Site and app events', 'SG · HK users'] },
+    { id: 'firehose', x: 240, y: 150, w: 160, lines: ['Kinesis Firehose', 'event capture'] },
+    { id: 'sched', x: 460, y: 150, w: 240, h: 62, lines: ['Schedules (MLOps)', 'daily incremental refresh', 'scheduled full retrain'] },
+    { id: 'app', kind: 'user', x: 20, y: 290, w: 160, lines: ['Marketplace (Rails)', 'recommendation slots'] },
+    { id: 'rules', x: 240, y: 280, w: 180, h: 76, lines: ['Business-rule layer', 'boosts, de-boosts, cold start,', 'segments, popularity,', 'V4 affinity engine + cache'] },
+    { id: 'lambda', x: 460, y: 290, w: 240, lines: ['Lambda serving', 'GetRecommendations'] },
+    { id: 'gb', kind: 'ext', x: 20, y: 380, w: 160, h: 44, lines: ['GrowthBook A/B'] },
+  ]}
+  edges={[
+    { from: 'redshift', to: 's3', label: 'extract' },
+    { from: 's3', to: 'pers', label: 'import' },
+    { from: 'events', to: 'firehose' },
+    { from: 'firehose', to: 'pers', label: 'events' },
+    { from: 'sched', to: 'pers' },
+    { from: 'app', to: 'rules', label: 'request' },
+    { from: 'rules', to: 'lambda' },
+    { from: 'lambda', to: 'pers' },
+    { from: 'gb', to: 'app', dashed: true, label: 'variant' },
+  ]}
+/>

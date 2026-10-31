@@ -1,0 +1,72 @@
+---
+title: "RAG product assistant for Teldat"
+summary: "Grounded answers to product and solution questions from Teldat's documentation, with a citation on every answer, plus one-click PPT, Excel and DOCX sales documents from the same knowledge base. Tech lead for a six-engineer team."
+group: ai
+client: "Teldat (networking vendor, Spain)"
+via: "as a Francium Tech engineer"
+role: "Tech lead, team of six: architecture, delivery, production operations"
+period: "Oct 2025 – Mar 2026"
+stack:
+  - FastAPI
+  - PostgreSQL + pgvector
+  - SQLAlchemy / Alembic
+  - LangChain
+  - LangGraph
+  - Celery + Redis
+  - OpenAI
+  - Mistral
+  - GCS
+  - React 19
+  - GitHub Actions
+  - Sentry
+featured: true
+order: 2
+---
+
+import Diagram from '../../components/diagrams/Teldat.astro';
+
+## Context
+
+Teldat is a networking hardware vendor in Spain with a large body of product documentation: manuals, solution guides, a documentation website, SharePoint content and recorded sessions. Sales and support staff needed two things from it: accurate answers to product and solution questions, and sales documents (presentations, spreadsheets, Word documents) assembled from the same material. I was tech lead for the six-engineer team that built this, as a Francium Tech engineer, and owned the architecture, delivery and production operations.
+
+## Constraints
+
+- **Seven kinds of source material**: sitemaps, PDF/DOCX/PPTX manuals, external URLs and files, SharePoint, YouTube transcripts and bulk Excel imports, each needing its own parsing and refresh path.
+- **Every answer must cite its source.** A networking vendor cannot have an assistant inventing specifications or links.
+- **A real multi-user product**: authentication, roles and permissions, visitor analytics, and an admin surface for the people maintaining the knowledge base.
+- **Production from day one**: deploys, rollback, monitoring and the usual list of things that only break under load.
+
+## Architecture
+
+<Diagram />
+
+## What I built
+
+- **Ingestion for all seven source types**, orchestrated with Celery, producing chunks and embeddings on pgvector with citation tracking carried through to every answer.
+- **Retrieval tuning and hallucination controls**: grounded link suggestions only (no invented URLs), and manual knowledge injection for the gaps the documentation did not cover.
+- **Document generation**: PPT, Excel and DOCX sales documents produced from the same knowledge base, stored on GCS.
+- **Authentication and RBAC**: JWT with refresh-token rotation and fine-grained permissions.
+- **Production readiness**: GitHub Actions deploys with a release listing and one-click rollback, Sentry, Celery/Flower tuning, database connection-pool leak fixes, device-fingerprint visitor tracking with admin analytics, and a 429-test suite.
+- **Leading the team**: architecture decisions, delivery planning and production operations for six engineers.
+
+## The hard part
+
+Keeping answers grounded was the recurring problem. Retrieval returned the right passages most of the time, but the model would still volunteer plausible-looking URLs and specifications that did not exist in the sources. The fix was not one prompt change but a set of controls: link suggestions are grounded in what was actually retrieved (no invented URLs), answers carry citations back to the chunks they came from, and manual knowledge injection covers the gaps the documentation leaves. Retrieval relevance was tuned alongside this so that the grounded set was worth citing in the first place.
+
+The other hard part was operational. A database connection-pool leak showed up in production; finding and fixing it, and tuning Celery and Flower, was part of owning the system rather than just shipping it.
+
+## Outcome
+
+- In production, with the team's deploys, rollback and monitoring owned by me.
+- 7 source types ingested; a citation on every answer; PPT, Excel and DOCX generation from the same knowledge base.
+- 429 automated tests in the suite.
+
+## Stack
+
+FastAPI, PostgreSQL + pgvector, SQLAlchemy/Alembic, LangChain, LangGraph, Celery + Redis, OpenAI, Mistral, GCS, React 19, GitHub Actions, Sentry.
+
+## Evidence
+
+Client product behind a login; no public link.
+
+{/* TODO: confirm with him: whether any UI screenshot can be shown after blurring. */}

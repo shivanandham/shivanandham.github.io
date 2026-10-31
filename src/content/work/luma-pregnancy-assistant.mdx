@@ -1,0 +1,57 @@
+---
+title: "Luma: a pregnancy companion with an AI assistant"
+summary: "A Flutter tracking app with a Node.js/Express backend and an AI chat that triages first, auto-logs symptoms and carries remembered facts into later prompts. Public repository."
+group: product
+role: "Sole developer"
+period: "Oct – Nov 2025"
+stack:
+  - Flutter
+  - Node.js / Express
+  - Prisma
+  - PostgreSQL
+  - Gemini 2.5 Flash
+links:
+  - label: "Source on GitHub"
+    href: "https://github.com/shivanandham/pregnancy-assistant"
+order: 9
+---
+
+import Diagram from '../../components/diagrams/Luma.astro';
+
+## Context
+
+Luma is a pregnancy companion for one expecting mother: week-by-week progress, symptom, weight and appointment tracking, a photo journal, reminders, and an AI assistant that knows which week it is. I built it in October and November 2025 as a personal project, and the source is public.
+
+## Constraints
+
+- **Single user, no accounts.** The app assumes one user per device, so there is no login, and the design has to stay simple because of that rather than in spite of it.
+- **The model key must never ship in the app.** All AI calls go through the backend.
+- **Medical caution**: the assistant supports and informs; it does not replace a doctor, and its answers say so.
+
+## Architecture
+
+<Diagram />
+
+## What I built
+
+- **The Flutter app**: home dashboard with trimester-aware progress, symptom tracker with severity, weight tracker with charts, appointment manager, photo journal, calendar, and local notifications for appointments, medication and weekly milestones. Provider for state, Material 3 for the UI.
+- **The backend**: Node.js/Express with Prisma over PostgreSQL (self-hosted on a droplet), with a one-command database deploy script, holding pregnancy data, symptoms, appointments, weight entries and chat history.
+- **The AI assistant**: Gemini 2.5 Flash behind the backend proxy. AI-generated daily checklists, and a chat that triages first, auto-logs symptoms it hears about, and retrieves remembered facts into later prompts so the conversation does not start from zero each time.
+
+## The hard part
+
+Making the chat useful across days rather than per message. A pregnancy assistant that forgets yesterday's nausea is not much of an assistant. The chat extracts symptoms from what the user writes and logs them as tracker entries, and facts worth remembering are stored and pulled back into the prompt on later turns along with the current week. Triage runs first, before the conversational answer, and every answer carries the medical disclaimer.
+
+## Outcome
+
+A working app and backend, in a public repository.
+
+## Stack
+
+Flutter (Provider, local notifications), Node.js/Express, Prisma, PostgreSQL, Gemini 2.5 Flash.
+
+## Evidence
+
+- [Source on GitHub](https://github.com/shivanandham/pregnancy-assistant)
+
+{/* TODO: confirm with him: app screenshots to add (none in the repo README). */}

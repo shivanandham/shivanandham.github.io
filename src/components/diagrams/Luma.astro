@@ -1,0 +1,24 @@
+---
+import Flow from '../Flow.astro';
+---
+
+<Flow
+  title="Luma architecture"
+  caption="The Flutter app talks only to the Node.js/Express API. The Gemini key stays on the server; the prompt builder adds the current pregnancy week and facts remembered from earlier chats, and the chat auto-logs symptoms it hears about."
+  width={760}
+  height={280}
+  nodes={[
+    { id: 'app', kind: 'user', x: 20, y: 40, w: 200, h: 56, lines: ['Flutter app', 'Provider state, local notifications'] },
+    { id: 'api', x: 290, y: 40, w: 200, h: 56, lines: ['Node.js / Express API', 'Prisma ORM'] },
+    { id: 'gemini', kind: 'ext', x: 550, y: 40, w: 190, h: 56, lines: ['Gemini 2.5 Flash', 'key kept on the server'] },
+    { id: 'pg', kind: 'store', x: 290, y: 180, w: 200, h: 56, lines: ['PostgreSQL', 'symptoms, weight, visits, chat'] },
+    { id: 'ctx', x: 550, y: 180, w: 190, h: 56, lines: ['Prompt builder', 'week + remembered facts'] },
+  ]}
+  edges={[
+    { from: 'app', to: 'api' },
+    { from: 'api', to: 'pg' },
+    { from: 'api', to: 'ctx', label: 'chat' },
+    { from: 'ctx', to: 'gemini' },
+    { from: 'ctx', to: 'pg', dashed: true, label: 'recall · auto-log' },
+  ]}
+/>

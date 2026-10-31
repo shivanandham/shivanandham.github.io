@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  /** Show only the first N stack items as tags. */
+  tagLimit?: number;
+}
+
+const { entry, tagLimit = 5 } = Astro.props;
+const d = entry.data;
+const context = [d.client, d.via].filter(Boolean).join(' · ');
+---
+
+<li class="card">
+  <h3><a href={`/work/${entry.id}/`}>{d.title}</a></h3>
+  <p class="meta">{d.role}{context ? ` · ${context}` : ''} · {d.period}</p>
+  <p>{d.summary}</p>
+  <ul class="tags" aria-label="Stack">
+    {d.stack.slice(0, tagLimit).map((s) => <li>{s}</li>)}
+  </ul>
+</li>

@@ -1,0 +1,63 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: entries[i - 1] ?? null, next: entries[i + 1] ?? null },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const groupName = { ai: 'AI systems', product: 'Products I own', platform: 'Backend and platform' }[d.group];
+---
+
+<Base title={d.title} description={d.summary}>
+  <article>
+    <header class="case-head">
+      <p class="eyebrow"><a href={`/work/#${d.group}`}>{groupName}</a></p>
+      <h1>{d.title}</h1>
+      <p class="lede">{d.summary}</p>
+      <dl class="case-facts">
+        <dt>Role</dt>
+        <dd>{d.role}</dd>
+        {d.client && (
+          <>
+            <dt>Client</dt>
+            <dd>{d.client}{d.via ? ` (${d.via})` : ''}</dd>
+          </>
+        )}
+        <dt>Period</dt>
+        <dd>{d.period}</dd>
+        <dt>Stack</dt>
+        <dd>{d.stack.join(', ')}</dd>
+        {d.links.length > 0 && (
+          <>
+            <dt>Links</dt>
+            <dd>
+              {d.links.map((l, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <a href={l.href} target="_blank" rel="noopener">{l.label}</a>
+                </>
+              ))}
+            </dd>
+          </>
+        )}
+      </dl>
+    </header>
+
+    <div class="case-body">
+      <Content />
+    </div>
+
+    <nav class="case-nav" aria-label="Other case studies">
+      {prev ? <a href={`/work/${prev.id}/`}>← {prev.data.title}</a> : <span></span>}
+      {next ? <a href={`/work/${next.id}/`}>{next.data.title} →</a> : <a href="/work/">All case studies →</a>}
+    </nav>
+  </article>
+</Base>

@@ -1,0 +1,34 @@
+---
+import Flow from '../Flow.astro';
+---
+
+<Flow
+  title="Golden Set Analytics data platform architecture"
+  caption="Celery scrapers share one token-bucket limiter and recover from anti-bot blocks with headless Playwright. Each source lands in its own raw intake tables, then promotion builds a source-neutral core with cross-source match identity and pg_trgm player resolution. Django 5 + DRF serves the result; the prediction model itself was built by teammates."
+  width={730}
+  height={440}
+  nodes={[
+    { id: 'src', kind: 'ext', x: 20, y: 34, w: 190, h: 66, lines: ['6 public sources', 'CoreTennis, ITF, WTN,', 'ATP/WTA, ITA, Sackmann'] },
+    { id: 'workers', x: 270, y: 34, w: 210, h: 66, lines: ['Celery scrapers (8 workers)', 'retry/backoff honouring Retry-After,', 'headless Playwright on blocks'] },
+    { id: 'limiter', x: 270, y: 140, w: 210, h: 50, lines: ['Token-bucket rate limiter', 'shared, 10–20 req/s'] },
+    { id: 'raw', kind: 'store', x: 540, y: 40, w: 170, lines: ['Raw intake', 'per-source tables'] },
+    { id: 'promote', x: 540, y: 134, w: 170, h: 66, lines: ['Promotion', 'cross-source match identity,', 'partial indexes'] },
+    { id: 'matcher', x: 270, y: 250, w: 210, h: 56, lines: ['pg_trgm identity resolution', 'confidence bands, ~95% auto-routed'] },
+    { id: 'review', kind: 'user', x: 20, y: 254, w: 190, h: 48, lines: ['Review queue', 'ambiguous merges'] },
+    { id: 'core', kind: 'store', x: 540, y: 250, w: 170, h: 56, lines: ['Source-neutral core', '1M+ players, matches'] },
+    { id: 'features', x: 270, y: 360, w: 210, h: 56, lines: ['Elo + trajectory features', 'contributed to this layer'] },
+    { id: 'model', kind: 'ext', x: 540, y: 360, w: 170, h: 56, lines: ['Prediction model', "teammates' work"] },
+  ]}
+  edges={[
+    { from: 'src', to: 'workers', label: 'fetch' },
+    { from: 'workers', to: 'limiter', dashed: true, label: 'acquire' },
+    { from: 'workers', to: 'raw' },
+    { from: 'raw', to: 'promote' },
+    { from: 'promote', to: 'core' },
+    { from: 'promote', to: 'matcher', label: 'player names' },
+    { from: 'matcher', to: 'review', label: 'uncertain' },
+    { from: 'matcher', to: 'core', label: 'resolved' },
+    { from: 'core', to: 'features' },
+    { from: 'features', to: 'model' },
+  ]}
+/>

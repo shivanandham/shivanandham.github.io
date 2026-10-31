@@ -1,0 +1,21 @@
+{
+  "name": "shivanandham.github.io",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio of Shivanandham Sankaranarayanan, Senior Software Engineer (Python backend, GenAI systems). Astro, static, deployed to GitHub Pages.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "8.1.2",
+    "astro": "7.3.8"
+  }
+}

@@ -1,0 +1,63 @@
+---
+title: "Tennis data platform for Golden Set Analytics"
+summary: "The data-acquisition and identity-resolution layer behind a tennis scouting product: polite, resilient scraping of six public sources, a two-layer schema with cross-source match identity, and pg_trgm player resolution that auto-routes about 95% of records."
+group: platform
+client: "Golden Set Analytics (tennis scouting)"
+via: "as a Francium Tech engineer"
+role: "Backend and data engineer"
+period: "Apr 2026 – Aug 2026"
+stack:
+  - Python
+  - Django 5 + DRF
+  - Celery + Redis
+  - PostgreSQL (pg_trgm)
+  - Playwright
+  - Docker
+  - Azure
+order: 7
+---
+
+import Diagram from '../../components/diagrams/Gsa.astro';
+
+## Context
+
+Golden Set Analytics scouts tennis players, and its prediction model needs one clean history of matches, players and rankings. That history is scattered across six public sources (CoreTennis, ITF, WTN, ATP/WTA, ITA and the Sackmann datasets), each with its own player identities, formats, rate limits and anti-bot protection. I built the data layer that turns those six feeds into a single core, as a Francium Tech engineer. The prediction model itself was built by teammates; I contributed to the Elo rating and player-trajectory feature layer that feeds it.
+
+## Constraints
+
+- **Be a polite client.** Six sources, some protected by Cloudflare or Incapsula, and none of them happy about being hammered.
+- **The same match appears in several sources** with players in either order and names spelled differently.
+- **Scale**: the core passed one million players during the engagement, and per-row checks that were fine at 100K rows were not fine at 800K.
+- **Ambiguity cannot be silently resolved.** A wrong merge of two players poisons every downstream feature.
+
+## Architecture
+
+<Diagram />
+
+## What I built
+
+- **Acquisition across six sources**: a token-bucket rate limiter shared by 8 parallel workers at 10–20 requests per second, retry with backoff that honours `Retry-After`, and self-healing past Cloudflare and Incapsula blocks with headless Playwright.
+- **The two-layer schema**: raw per-source intake tables promoted into a source-neutral core, with an orientation-independent match identity so the same match from two sources de-duplicates regardless of which player is listed first.
+- **Player-identity resolution** with pg_trgm similarity and confidence bands: about 95% of records route automatically, and ambiguous merges go to a review queue instead of being guessed.
+- **Index and query work**: a per-row promotion check cut from about 123 ms to under 1 ms at 800K rows with partial indexes, and the matcher's candidate pool shrunk from 500 to 100 as the core passed 1M players.
+- Contributions to the Elo rating and player-trajectory feature layer behind the prediction model.
+
+## The hard part
+
+Identity. Two sources will list the same match with the players swapped, and the same player as "J. Smith", "Smith, John" and "John Smith Jr." A naive unique key misses the duplicates; a loose one merges strangers. The match side is handled by an identity that does not depend on player order. The player side uses pg_trgm similarity, but the useful part is the confidence bands: confident results route automatically and the ambiguous band goes to a human. That is what lets roughly 95% of records flow through untouched without auto-merging a doubtful pair.
+
+Performance was the second half of the problem. The promotion step ran a per-row check that was cheap on a small core and took about 123 ms per row at 800K rows. Partial indexes matched to that check brought it under 1 ms. As the player table passed a million rows, the matcher's candidate pool was cut from 500 to 100 to keep resolution time flat.
+
+## Outcome
+
+- Six sources feeding one source-neutral core, at more than 1M players.
+- About 95% of records auto-routed by identity resolution; the rest reviewed, not guessed.
+- Promotion check: ~123 ms to under 1 ms per row at 800K rows.
+
+## Stack
+
+Python, Django 5 + DRF, Celery + Redis, PostgreSQL (pg_trgm), Playwright, Docker, Azure.
+
+## Evidence
+
+Client data platform; no public link.

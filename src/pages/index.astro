@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import WorkCard from '../components/WorkCard.astro';
+
+const featured = (await getCollection('work', ({ data }) => data.featured && !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const builds = (await getCollection('builds', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base
+  title="Home"
+  description="Shivanandham Sankaranarayanan, Senior Software Engineer in Chennai. Python backend and GenAI systems: RAG assistants, agent platforms, MCP servers, recommendation engines, and the backends that hold them up."
+>
+  <section class="hero">
+    <p class="eyebrow">Chennai, India · remote-friendly</p>
+    <h1>Shivanandham Sankaranarayanan</h1>
+    <p class="role">Senior Software Engineer · Python backend and GenAI systems</p>
+    <p class="lede">
+      I design and ship the systems behind production AI: retrieval pipelines, agent platforms, MCP servers,
+      recommendation engines, and the backends, data pipelines and deploys that hold them up. Five-plus years, usually
+      as the sole or lead engineer on the work.
+    </p>
+    <ul class="links-row" aria-label="Links">
+      <li><a class="btn primary" href="/work/">See the work</a></li>
+      <li><a class="btn" href="https://github.com/shivanandham" target="_blank" rel="me noopener">GitHub</a></li>
+      <li><a class="btn" href="https://www.linkedin.com/in/shivanandham" target="_blank" rel="me noopener">LinkedIn</a></li>
+      <li><a class="btn" href="/resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a></li>
+      <li><a class="btn" href="mailto:rootofshiva@gmail.com">Email</a></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="featured-h">
+    <div class="section-head">
+      <h2 id="featured-h">Featured case studies</h2>
+      <a href="/work/">All case studies</a>
+    </div>
+    <ul class="card-grid three">
+      {featured.map((entry) => <WorkCard entry={entry} />)}
+    </ul>
+  </section>
+
+  <section aria-labelledby="now-h">
+    <h2 id="now-h">What I work on</h2>
+    <ul class="fact-list">
+      <li>
+        <strong>AI systems in production.</strong> Led the design and build of an AI-native engineering platform (Claude
+        Code agents, MCP integrations, golden-flow evals) adopted by a ~20-engineer team; tech lead for a RAG assistant on
+        FastAPI, pgvector and LangChain; led an AWS Personalize recommendation engine with automated retraining.
+      </li>
+      <li>
+        <strong>Backends and data.</strong> Python (FastAPI, Django), Ruby on Rails, PostgreSQL, Celery and Kafka. I own
+        systems from schema design to CI/CD and production support.
+      </li>
+      <li>
+        <strong>My own products.</strong> <a href="/work/bixops-pos/">BixOps</a>, a POS platform for small food
+        businesses and temples, from a multi-tenant Rails backend to offline Flutter and Windows billing apps.
+      </li>
+      <li>
+        <strong>Open source.</strong>
+        <a href="https://github.com/shivanandham/multi-database-mcp" target="_blank" rel="noopener">multi-database-mcp</a>
+        (an MCP server for several PostgreSQL databases at once) and a
+        <a href="https://github.com/shivanandham/llm-chat" target="_blank" rel="noopener">free-tier LLM gateway</a>
+        with provider failover. More under <a href="/builds/">Builds</a>.
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="builds-h">
+    <div class="section-head">
+      <h2 id="builds-h">Smaller builds</h2>
+      <a href="/builds/">All builds</a>
+    </div>
+    <ul class="card-grid three">
+      {
+        builds.slice(0, 3).map((b) => (
+          <li class="card">
+            <h3>
+              <a href={b.data.repo ?? `/builds/#${b.id}`} target={b.data.repo ? '_blank' : undefined} rel={b.data.repo ? 'noopener' : undefined}>
+                {b.data.title}
+              </a>
+            </h3>
+            <p class="meta">{b.data.period}</p>
+            <p>{b.data.summary}</p>
+            <ul class="tags" aria-label="Stack">
+              {b.data.stack.slice(0, 4).map((s) => (
+                <li>{s}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

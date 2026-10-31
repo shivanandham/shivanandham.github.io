@@ -1,0 +1,40 @@
+---
+import Flow from '../Flow.astro';
+---
+
+<Flow
+  title="Agent Smith architecture"
+  caption="A tier-0 orchestrator runs explicit-contract agents (11 agents, 10 workflows, 16 skills) that read a 19-domain knowledge layer before acting. Production data comes only through a governed MCP gateway. The eval harness scores runs on artifacts, and a guard hook gates pull requests (shadow mode first)."
+  width={780}
+  height={470}
+  groups={[{ x: 450, y: 14, w: 150, h: 380, label: 'Agents (11)' }]}
+  nodes={[
+    { id: 'eng', kind: 'user', x: 20, y: 180, w: 170, lines: ['Engineer', 'one-line feature request'] },
+    { id: 'orch', x: 240, y: 180, w: 180, h: 60, lines: ['Tier-0 orchestrator', '10 workflows · 16 skills'] },
+    { id: 'know', kind: 'store', x: 240, y: 50, w: 180, h: 60, lines: ['Knowledge layer', '19 domains: Rails, Nuxt, Kafka'] },
+    { id: 'research', x: 465, y: 40, w: 120, h: 44, lines: ['Research'] },
+    { id: 'plan', x: 465, y: 110, w: 120, h: 44, lines: ['Planning'] },
+    { id: 'impl', x: 465, y: 180, w: 120, h: 44, lines: ['Implementation'] },
+    { id: 'review', x: 465, y: 250, w: 120, h: 44, lines: ['Review'] },
+    { id: 'qa', x: 465, y: 320, w: 120, h: 44, lines: ['QA'] },
+    { id: 'pr', x: 640, y: 180, w: 120, h: 60, lines: ['Pull request', 'tests + review', '50+ repos'] },
+    { id: 'guard', x: 640, y: 300, w: 120, h: 60, lines: ['Guard hook', 'PR gating,', 'shadow mode first'] },
+    { id: 'evals', x: 640, y: 40, w: 120, h: 72, lines: ['Eval harness', 'golden flows judged', 'on artifacts', '40-prompt triage'] },
+    { id: 'mcp', x: 240, y: 310, w: 180, h: 60, lines: ['Governed MCP gateway', 'permission guardrails · tracing'] },
+    { id: 'surf', kind: 'ext', x: 240, y: 400, w: 180, h: 60, lines: ['12 production surfaces', 'Redash, Sentry, Datadog, CircleCI,', 'Cloudflare, Playwright …'] },
+  ]}
+  edges={[
+    { from: 'eng', to: 'orch' },
+    { from: 'know', to: 'orch', label: 'read first' },
+    { from: 'orch', to: 'research' },
+    { from: 'orch', to: 'plan' },
+    { from: 'orch', to: 'impl' },
+    { from: 'orch', to: 'review' },
+    { from: 'orch', to: 'qa' },
+    { from: 'impl', to: 'pr' },
+    { from: 'guard', to: 'pr', label: 'gate' },
+    { from: 'evals', to: 'orch', dashed: true, label: 'scores runs' },
+    { from: 'orch', to: 'mcp', label: 'tool calls' },
+    { from: 'mcp', to: 'surf' },
+  ]}
+/>

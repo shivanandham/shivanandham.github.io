@@ -1,0 +1,32 @@
+---
+import Flow from '../Flow.astro';
+---
+
+<Flow
+  title="Mainspring generative ad platform architecture"
+  caption="Campaign plans sync in from Airtable. FastAPI enqueues Celery generation tasks (Redis broker) that call Gemini for copy and Stability AI for banner outpainting, recording per-component status so retries are safe. Designers pull finished assets into Figma, After Effects and Photoshop through an external API."
+  width={720}
+  height={370}
+  nodes={[
+    { id: 'airtable', kind: 'ext', x: 20, y: 40, w: 170, lines: ['Airtable', 'campaign plans'] },
+    { id: 'sync', x: 250, y: 40, w: 170, lines: ['Plan sync', 'plans → frames'] },
+    { id: 'db', kind: 'store', x: 470, y: 36, w: 230, h: 62, lines: ['PostgreSQL', 'campaigns, frames, components,', 'generation status'] },
+    { id: 'ui', kind: 'user', x: 20, y: 150, w: 170, lines: ['Agency team', 'React 19 + shadcn'] },
+    { id: 'api', x: 250, y: 150, w: 170, lines: ['FastAPI', 'SQLAlchemy / Alembic'] },
+    { id: 'celery', x: 470, y: 146, w: 230, h: 62, lines: ['Celery generation tasks', 'retry with backoff,', 'per-component status'] },
+    { id: 'tools', kind: 'ext', x: 20, y: 270, w: 190, h: 60, lines: ['Figma · After Effects ·', 'Photoshop', 'via external assets API'] },
+    { id: 'stab', kind: 'ext', x: 250, y: 270, w: 170, h: 60, lines: ['Stability AI', 'outpainting, geometry', 'solved per banner'] },
+    { id: 'gemini', kind: 'ext', x: 470, y: 270, w: 230, h: 60, lines: ['Google Gemini via Pydantic AI', 'structured output,', '3 copy options per frame'] },
+  ]}
+  edges={[
+    { from: 'airtable', to: 'sync' },
+    { from: 'sync', to: 'db' },
+    { from: 'ui', to: 'api' },
+    { from: 'api', to: 'db' },
+    { from: 'api', to: 'celery', label: 'enqueue' },
+    { from: 'celery', to: 'db', label: 'status' },
+    { from: 'celery', to: 'gemini', label: 'copy' },
+    { from: 'celery', to: 'stab', label: 'banners' },
+    { from: 'tools', to: 'api', label: 'pull assets' },
+  ]}
+/>

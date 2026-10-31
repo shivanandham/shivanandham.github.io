@@ -1,0 +1,60 @@
+---
+title: "Recommendation engine on AWS Personalize"
+summary: "Personalised product recommendations for a financial-products marketplace in Singapore and Hong Kong: an automated Personalize pipeline with daily incremental refreshes and scheduled retrains, plus a business-rule layer on top of the model. Run in production for several years."
+group: ai
+client: "MoneySmart (fintech, Singapore and Hong Kong)"
+via: "as a Francium Tech engineer"
+role: "Lead engineer"
+period: "Nov 2022 – 2026"
+stack:
+  - AWS Personalize
+  - Redshift
+  - S3
+  - Kinesis Firehose
+  - AWS Lambda
+  - Ruby on Rails
+  - Python
+  - GrowthBook
+order: 4
+---
+
+import Diagram from '../../components/diagrams/Personalize.astro';
+
+## Context
+
+MoneySmart runs a financial-products marketplace in Singapore and Hong Kong. The marketplace needed personalised recommendations that improved as users browsed and bought, without a data-science team on call to retrain models by hand. I led the recommendation system from November 2022, as a Francium Tech engineer, from the first pipeline to the fourth generation of the affinity engine.
+
+## Constraints
+
+- **Two markets, two catalogues**, each with its own data and its own model.
+- **Financial products behave differently from retail.** Someone who just took a credit card should not be shown more credit cards; someone new has no history at all.
+- **The pipeline had to run itself**: extraction, imports, event capture, refreshes and retrains with no manual steps.
+- **Every change had to be measurable** through A/B tests before it stayed.
+
+## Architecture
+
+<Diagram />
+
+## What I built
+
+- **The MLOps pipeline**: Redshift extraction to S3, Personalize dataset imports, Kinesis Firehose event capture, Lambda-backed serving, automated daily incremental refreshes and scheduled full retrains.
+- **The business-rule layer on top of the model**: viewed-product boosts, post-purchase category de-boosts, cold-start lists for new users, popularity scoring, and life-stage and socio-demographic segments.
+- **The V4 affinity engine** with caching and channel redistribution, including finding and fixing its CPU hot spot.
+- **A/B testing** of recommendation output through GrowthBook.
+
+## The hard part
+
+The model alone was not the product. Personalize gives a ranked list; the marketplace needed that list bent by rules a model cannot learn quickly enough, such as de-boosting a category the user has just purchased from, and it needed sensible output for users with no history at all. The rule layer sits between the application and the model output and is where most of the product logic lives. Its fourth version, the V4 affinity engine, added caching and redistribution across channels, and had a CPU hot spot that I found and fixed. GrowthBook A/B tests measured the output of each change.
+
+## Outcome
+
+- Ran in production for several years across two markets with automated refreshes and retrains.
+- A business-rule layer and a V4 affinity engine on top of the model, A/B-tested through GrowthBook.
+
+## Stack
+
+AWS Personalize, Redshift, S3, Kinesis Firehose, Lambda, Ruby on Rails, Python, GrowthBook.
+
+## Evidence
+
+Client production system; no public link. The pipeline shape and the rule layer are the parts worth discussing in detail.

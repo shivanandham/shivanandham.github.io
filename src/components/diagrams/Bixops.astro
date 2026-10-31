@@ -1,0 +1,39 @@
+---
+import Flow from '../Flow.astro';
+---
+
+<Flow
+  title="BixOps product family architecture"
+  caption="Three product lines. The cloud platform is one multi-tenant Rails 8.1 API serving the admin console, the staff apps and the customer storefront, with live sync over ActionCable. Solo Lite and TempleBilling run fully offline on-device. Solo Lite Online is the account-based sibling: a Rails 8 API behind a Flutter POS and an internal admin SPA."
+  width={760}
+  height={500}
+  groups={[
+    { x: 8, y: 12, w: 744, h: 198, label: 'Cloud POS platform' },
+    { x: 8, y: 228, w: 744, h: 110, label: 'Offline apps' },
+    { x: 8, y: 356, w: 744, h: 130, label: 'Solo Lite Online' },
+  ]}
+  nodes={[
+    { id: 'console', kind: 'user', x: 20, y: 40, w: 200, lines: ['Admin console', 'Next.js 16 + React 19'] },
+    { id: 'backend', x: 280, y: 36, w: 220, h: 62, lines: ['Rails 8.1 API (multi-tenant)', 'Devise + JWT · Pundit ·', 'Solid Queue / Cache / Cable'] },
+    { id: 'store', kind: 'user', x: 560, y: 40, w: 180, lines: ['Customer ordering', 'QR table · OTP takeaway'] },
+    { id: 'pos', kind: 'user', x: 20, y: 140, w: 200, lines: ['POS + kitchen display', 'PIN login, station routing'] },
+    { id: 'pg', kind: 'store', x: 280, y: 140, w: 220, lines: ['PostgreSQL', 'gapless invoices, audit trail'] },
+    { id: 'printers', kind: 'ext', x: 560, y: 140, w: 180, lines: ['Thermal printers', 'ESC/POS'] },
+    { id: 'sololite', x: 20, y: 256, w: 200, h: 66, lines: ['Solo Lite', 'Flutter · Drift/SQLite,', 'Bluetooth thermal printing'] },
+    { id: 'temple', x: 280, y: 256, w: 220, h: 66, lines: ['TempleBilling', '.NET 10 + WebView2 · SQLite,', 'Tamil/English, machine-ID licence'] },
+    { id: 'seeder', x: 560, y: 256, w: 180, h: 66, lines: ['Seeder / seeder_lite', 'per-customer signed', 'APK builds'] },
+    { id: 'slofe', kind: 'user', x: 20, y: 390, w: 200, lines: ['Flutter POS + admin SPA', 'device token + cashier PIN'] },
+    { id: 'slo', x: 280, y: 384, w: 220, h: 62, lines: ['Rails 8 API', 'idempotent bills, roles,', 'shop lifecycle, audit'] },
+    { id: 'kamal', kind: 'ext', x: 560, y: 390, w: 180, lines: ['Kamal 2 deploy', 'lite.bixops.in'] },
+  ]}
+  edges={[
+    { from: 'console', to: 'backend' },
+    { from: 'store', to: 'backend' },
+    { from: 'backend', to: 'pg' },
+    { from: 'backend', to: 'pos', label: 'live sync' },
+    { from: 'pos', to: 'printers' },
+    { from: 'seeder', to: 'sololite', label: 'builds' },
+    { from: 'slofe', to: 'slo' },
+    { from: 'slo', to: 'kamal', dashed: true },
+  ]}
+/>

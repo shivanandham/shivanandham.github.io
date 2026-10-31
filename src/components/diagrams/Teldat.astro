@@ -1,0 +1,32 @@
+---
+import Flow from '../Flow.astro';
+---
+
+<Flow
+  title="Teldat RAG assistant architecture"
+  caption="Ingestion and answering share one PostgreSQL + pgvector store. Celery (Redis broker) runs ingestion; FastAPI serves the React app; LangChain/LangGraph orchestrate retrieval and the LLM calls. Deploys run on GitHub Actions with one-click rollback; Sentry watches production."
+  width={720}
+  height={400}
+  nodes={[
+    { id: 'src', kind: 'ext', x: 20, y: 34, w: 180, h: 66, lines: ['7 source types', 'sitemaps, PDF/DOCX/PPTX, URLs,', 'SharePoint, YouTube, bulk Excel'] },
+    { id: 'celery', x: 250, y: 40, w: 170, lines: ['Celery ingestion', 'parse · chunk · embed'] },
+    { id: 'pg', kind: 'store', x: 470, y: 40, w: 220, lines: ['PostgreSQL + pgvector', 'chunks, embeddings, citations'] },
+    { id: 'user', kind: 'user', x: 20, y: 190, w: 180, lines: ['Sales / support staff', 'React 19 app'] },
+    { id: 'api', x: 250, y: 190, w: 170, lines: ['FastAPI', 'JWT + refresh rotation · RBAC'] },
+    { id: 'rag', x: 470, y: 190, w: 220, lines: ['Retrieve + answer', 'LangChain · LangGraph · citations'] },
+    { id: 'llm', kind: 'ext', x: 470, y: 320, w: 220, h: 48, lines: ['OpenAI · Mistral'] },
+    { id: 'docs', x: 250, y: 320, w: 170, lines: ['Document generator', 'PPT · Excel · DOCX'] },
+    { id: 'gcs', kind: 'store', x: 20, y: 320, w: 180, h: 48, lines: ['GCS', 'generated files'] },
+  ]}
+  edges={[
+    { from: 'src', to: 'celery', label: 'ingest' },
+    { from: 'celery', to: 'pg', label: 'embeddings' },
+    { from: 'user', to: 'api', label: 'question' },
+    { from: 'api', to: 'rag' },
+    { from: 'rag', to: 'pg', label: 'top-k chunks' },
+    { from: 'rag', to: 'llm', label: 'grounded prompt' },
+    { from: 'api', to: 'docs', label: 'generate' },
+    { from: 'docs', to: 'rag', dashed: true, label: 'same knowledge' },
+    { from: 'docs', to: 'gcs' },
+  ]}
+/>

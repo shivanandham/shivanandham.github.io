@@ -1,0 +1,65 @@
+---
+title: "Agent Smith: an AI-native engineering platform"
+summary: "A control plane where engineers drive Claude Code agents from a one-line feature request to reviewed, tested pull requests across 50+ service repositories. Adopted by a ~20-engineer team."
+group: ai
+client: "MoneySmart (fintech, Singapore and Hong Kong)"
+via: "as a Francium Tech engineer"
+role: "Lead engineer: design and build"
+period: "Feb 2026 – present"
+stack:
+  - Claude Code (agents, skills, hooks, workflows)
+  - MCP
+  - LLM evals
+  - Python
+  - Ruby on Rails
+  - Nuxt 3
+  - Kafka
+  - Redash · Sentry · Datadog · CircleCI · Cloudflare · Playwright
+featured: true
+order: 1
+---
+
+import Diagram from '../../components/diagrams/AgentSmith.astro';
+
+## Context
+
+MoneySmart runs a financial-products marketplace in Singapore and Hong Kong on 50+ service repositories: Rails APIs, Nuxt frontends and Kafka event flows, maintained by a team of about twenty engineers. The team wanted AI coding agents that produce reviewable, tested pull requests rather than chat transcripts that a human still has to turn into code. I led the design and build of that platform, Agent Smith, from February 2026, as a Francium Tech engineer embedded in the team.
+
+## Constraints
+
+- **Many repositories, many conventions.** An agent that works on one Rails API is useless if it ignores the Nuxt frontend or the Kafka contracts on either side of a change.
+- **The output is a pull request.** Tests, review and CI have to pass; the agent's own description of what it did does not count.
+- **Agents need production data**, from Redash queries to Sentry errors and CircleCI runs, but they cannot be given raw credentials or unlimited tool access.
+- **Trust had to be earned.** Twenty engineers would not accept a gate on their pull requests that broke their flow on day one.
+
+## Architecture
+
+<Diagram />
+
+## What I built
+
+- **The multi-agent workflow.** Research, planning, implementation, review and QA agents with explicit contracts between them, under a tier-0 orchestrator: 11 agents, 10 workflows and 16 skills in all.
+- **A 19-domain knowledge layer** spanning the Rails APIs, Nuxt frontends and Kafka event flows, which agents read before acting so that a change respects the conventions of the repository it lands in.
+- **The evaluation harness.** Golden-flow tests judged on artifacts (gate ledgers, session traces, `gh` call logs) rather than on the assistant's prose, plus a triage eval over 40 real engineer prompts.
+- **PR gating via a guard hook**, shipped in shadow mode first and enforced only after it had proven itself.
+- **Governed MCP access to 12 production surfaces** (Redash, Sentry, Datadog, CircleCI, Cloudflare, Playwright and others) with trace and telemetry hooks and permission guardrails.
+
+## The hard part
+
+Evaluating an agent by what it says is unreliable: a run can narrate success while the pull request is wrong or the tests never ran. The harness therefore scores runs on what they leave behind: the gate ledger, the session trace and the log of `gh` calls that were actually made, rather than the assistant's own account of the run. A triage eval over 40 real engineer prompts checks the front of the pipeline the same way. The same caution shaped the rollout: the guard hook that gates pull requests ran in shadow mode before it was allowed to block anything.
+
+## Outcome
+
+- Adopted by the ~20-engineer team for work across 50+ repositories.
+- 11 agents, 10 workflows, 16 skills, 19 knowledge domains, 12 governed MCP surfaces, a 40-prompt triage eval.
+- PR gating enforced after a shadow-mode period rather than imposed cold.
+
+## Stack
+
+Claude Code (agents, skills, hooks, workflows), MCP, Python, Ruby on Rails, Nuxt 3, Kafka; MCP surfaces on Redash, Sentry, Datadog, CircleCI, Cloudflare and Playwright.
+
+## Evidence
+
+Internal tooling at a client, so there is no public link. I am happy to walk through the agent contracts, the eval harness and the guard-hook rollout in conversation.
+
+{/* TODO: confirm with him: any screenshot or trace excerpt that is safe to show after redaction. */}

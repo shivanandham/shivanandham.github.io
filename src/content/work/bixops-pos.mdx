@@ -1,0 +1,118 @@
+---
+title: "BixOps: a POS platform for small food businesses and temples"
+summary: "My own product line. A multi-tenant cloud POS platform (Rails 8.1 backend, admin console, customer ordering), an offline Flutter billing app with Bluetooth thermal printing, its online sibling, an offline Windows temple-billing app in Tamil and English, and the tool that builds per-customer APKs."
+group: product
+role: "Founder-engineer: product, architecture, code and operations"
+period: "Dec 2025 – present"
+stack:
+  - Ruby on Rails 8.1
+  - PostgreSQL
+  - Next.js 16 + React 19
+  - Flutter + Drift/SQLite
+  - ESC/POS thermal printing
+  - .NET 10 + WebView2
+  - Python
+  - Kamal
+featured: true
+order: 3
+---
+
+import Diagram from '../../components/diagrams/Bixops.astro';
+
+## Context
+
+BixOps is my own company. It makes point-of-sale software for small food businesses in India, the kind of counter that runs on a tablet and a thermal printer, and for temples, which have billing needs no restaurant POS covers. The work started in December 2025 and is ongoing. There are three product lines, built in this order: a cloud platform for restaurants with multiple branches, the offline Flutter apps (the full Solo app and the single-counter Solo Lite, with Solo Lite Online as its server-backed sibling), and TempleBilling for Windows.
+
+{/* TODO: confirm with him: whether BixOps has co-founders or other contributors who should be credited; the page currently reads as his work alone. */}
+
+## Constraints
+
+- **Indian GST compliance**: CGST/SGST split, per-item rates, inclusive or exclusive pricing per outlet, and invoice numbers in a strict gap-free sequence per GST registration that resets each financial year. Cancellations are credit notes; numbers are never reused.
+- **Counters are shared and busy.** Staff log in by PIN on a till that is signed in once; a manager's PIN is needed for voids and discounts. Everything that leaks money (discounts, comps, cancellations) is logged.
+- **Not every counter has reliable internet**, so the lite apps work fully offline and the Windows app never needs a connection at all.
+- **A very small team has to run it**: onboarding, plans, per-customer builds and support all need tooling, not manual steps.
+
+## Architecture
+
+<Diagram />
+
+## What I built
+
+### Cloud POS platform (Dec 2025 – present)
+
+- **A multi-tenant Rails 8.1 API** (Devise + JWT, Pundit, Solid Queue, Solid Cache, Solid Cable, Kamal) serving three audiences through one contract: the admin console, the restaurant staff apps and the customer ordering site.
+- **Order flow**: running tabs per table, kitchen order tickets routed to stations (bar, kitchen, tandoor, dessert), a real-time kitchen display over ActionCable, split/merge/transfer, manager-approved reopen with credit notes, tips, cash drawer and one-tap day close with a Z-report.
+- **Menu and stock**: categories, variants, add-on groups with rules, combos, per-channel pricing, time-based menus, and an ingredient-based out-of-stock cascade (one ingredient out marks every dependent dish out on every screen).
+- **GST-compliant invoicing**: gapless per-GSTIN, per-financial-year invoice series allocated under a row lock at settlement; cancellation by credit note.
+- **Customer self-ordering**: scan a QR at the table or verify a phone number for takeaway; orders land as pending requests that staff approve.
+- **A plan and entitlements engine**: plans are bundles of features and numeric limits (branches, staff, menu items); any restaurant can get a per-restaurant override with an expiry and a reason; account standing (trial, active, past-due with grace, suspended) is a master switch on top. Entitlement (what is unlocked) is kept separate from authorisation (who may use it).
+- **Audit trail, DPDP data protection** (consent, export and erasure), platform reporting and a network dashboard for operators.
+- **The admin console** in Next.js 16 and React 19, built through eleven phases to parity with the backend.
+- **248 RSpec specs** across models, services, policies, jobs, channels and request flows, plus an OpenAPI description of the API.
+
+### Solo Lite and Solo Lite Online (Jul – Aug 2026)
+
+- **Solo Lite**: an offline single-counter Flutter POS on Drift/SQLite with Bluetooth thermal receipt printing (ESC/POS), weight-based pricing and GST as compile-time varieties, device locking and a demo mode. Every screen is implemented from the design files; fidelity is tracked by an automated design-versus-app comparison report. 52 tests.
+- **Solo Lite Online**: the account-based sibling. A Rails 8 API with a device-token-plus-PIN auth model (a PIN is only valid on a tablet already signed in to the shop; owners and managers always use email and password), owner/manager/cashier roles with a capabilities object the client reads to hide what the API would refuse, a shop lifecycle with a two-day past-due grace computed from the clock on every request, and an append-only audit trail with cancelled orders as the headline category. Bills carry a client-minted UUID as an idempotency key and a per-shop number sequence allocated under a row lock. Prices always come from the server's menu. 125 RSpec examples and a 42-check end-to-end demo script; deployed with Kamal 2. A Flutter POS client and a Vite + React admin SPA sit on top.
+
+### TempleBilling (Oct 2026)
+
+- An **offline Windows app for temples** in .NET 10 with a WebView2 front end and SQLite storage: quick billing with F-keys, donations with thermal or A4 80G receipts, darshan booking, kattalai (nakshatra-based recurring poojas) with panchangam computed from the temple's latitude and longitude, members, expenses, day close with a cash count, reports with Excel export and pendrive backup. The UI and receipts are in Tamil and English.
+- **Licensing by machine ID**: the app shows a machine ID; a vendor-side key generator signs a key that embeds the temple name and works only on that PC.
+- Ships as a single executable and as an installer that adds WebView2 if missing; the release script runs the unit tests, publishes, runs an end-to-end self-test against the published executable, then builds the installer.
+
+### Seeder (May – Jul 2026)
+
+- A **local web app, Python standard library only**, that builds per-customer signed APKs of the full offline Solo app: generate a customer's database from a menu entered in the browser (or restore a `.db` the customer exported), stamp receipt branding per paper width (58 mm / 80 mm) with a live preview that mirrors the printer's wrapping, set a demo expiry and a device lock, then run the Flutter release build. Keeps per-customer state, presets and a build history. A trimmed sibling, seeder_lite, does the same for Solo Lite, where the only per-customer inputs are branding and a few compile-time flags.
+
+## The hard part
+
+Invoice numbers under concurrency. Indian GST wants a gap-free sequence per registration per financial year, and a busy restaurant settles bills from several tills at once. The sequence is allocated under a row lock at settlement, so two tills can never take the same number and a failed settlement never burns one. Cancellation is a credit note, which keeps the series intact. Solo Lite Online had the offline-flavoured version of the same problem: a tablet that loses the response to "create bill" must be able to retry without taking a second number for one sale, so the app mints a UUID before sending and the server treats it as the bill's identity.
+
+The entitlements engine was the other design problem worth getting right: keeping "what the plan unlocks" and "what this staff role may do" as two separate layers, with account status as a master switch above both, so that two permission systems never contradict each other and a suspended shop locks its POS while still letting the owner read their own records.
+
+## Outcome
+
+- Three product lines built end to end, from schema to deploy.
+- Cloud platform: 248-spec backend, eleven-phase admin console at parity, OpenAPI contract.
+- Solo Lite: 52 tests, design-fidelity report; Solo Lite Online: 125 specs plus a 42-check end-to-end script, deployed with Kamal.
+- TempleBilling: installer and single-exe builds with an end-to-end self-test in the release pipeline.
+
+## Stack
+
+Ruby on Rails 8.1 (Devise + JWT, Pundit, Solid Queue/Cache/Cable, Kamal), PostgreSQL, Next.js 16 + React 19 + Tailwind, Flutter with Drift/SQLite and ESC/POS printing, Rails 8 + Vite/React (Solo Lite Online), .NET 10 + WebView2 + SQLite (TempleBilling), Python standard library (Seeder).
+
+## Evidence
+
+Solo Lite screens, rendered from the design files the app is built from (design renders, mock data):
+
+<ul class="screens">
+  <li>
+    <figure>
+      <img src="/img/solo-lite/home_dark.png" alt="Solo Lite home screen in dark theme: an empty bill above a product panel with Favourites, Coffee, Biryani and Juice tabs." width="434" height="914" loading="lazy" />
+      <figcaption>Billing home (design render, dark)</figcaption>
+    </figure>
+  </li>
+  <li>
+    <figure>
+      <img src="/img/solo-lite/reports_light.png" alt="Solo Lite reports screen in light theme: a list of bills with numbers, dates, amounts and a running total." width="434" height="914" loading="lazy" />
+      <figcaption>Reports (design render, light)</figcaption>
+    </figure>
+  </li>
+  <li>
+    <figure>
+      <img src="/img/solo-lite/manage_menu_dark.png" alt="Solo Lite manage-menu screen in dark theme: categories with items, prices, favourite stars and edit and delete buttons." width="434" height="914" loading="lazy" />
+      <figcaption>Manage menu (design render, dark)</figcaption>
+    </figure>
+  </li>
+  <li>
+    <figure>
+      <img src="/img/solo-lite/printer_settings_dark.png" alt="Solo Lite printer settings screen in dark theme." width="434" height="914" loading="lazy" />
+      <figcaption>Printer settings (design render, dark)</figcaption>
+    </figure>
+  </li>
+</ul>
+
+The code is private (it is the product). I can walk through the schema, the invoice sequencer and the entitlements engine in conversation.
+
+{/* TODO: confirm with him: a public BixOps landing URL to link, and a TempleBilling screenshot (the self-test writes screenshots to selftest-out/ on a fresh database). */}
