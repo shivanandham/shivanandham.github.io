@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="Mainspring generative ad platform architecture"
   caption="Campaign plans sync in from Airtable. FastAPI enqueues Celery generation tasks (Redis broker) that call Gemini for copy and Stability AI for banner outpainting, recording per-component status so retries are safe. Designers pull finished assets into Figma, After Effects and Photoshop through an external API."
   width={720}

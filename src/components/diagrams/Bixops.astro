@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="BixOps product family architecture"
   caption="Three product lines. The cloud platform is one multi-tenant Rails 8.1 API serving the admin console, the staff apps and the customer storefront, with live sync over ActionCable. Solo Lite and TempleBilling run fully offline on-device. Solo Lite Online is the account-based sibling: a Rails 8 API behind a Flutter POS and an internal admin SPA."
   width={760}

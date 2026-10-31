@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="Luma architecture"
   caption="The Flutter app talks only to the Node.js/Express API. The Gemini key stays on the server; the prompt builder adds the current pregnancy week and facts remembered from earlier chats, and the chat auto-logs symptoms it hears about."
   width={760}

@@ -1,8 +1,11 @@
 ---
 title: "BixOps: a POS platform for small food businesses and temples"
 summary: "My own product line. A multi-tenant cloud POS platform (Rails 8.1 backend, admin console, customer ordering), an offline Flutter billing app with Bluetooth thermal printing, its online sibling, an offline Windows temple-billing app in Tamil and English, and the tool that builds per-customer APKs."
+outcome: "My own POS company: multi-tenant Rails platform, offline Flutter billing apps, Windows temple-billing app in Tamil and English."
+result: "Three product lines shipped; 248 + 125 backend specs; gapless GST invoicing"
 group: product
 role: "Founder-engineer: product, architecture, code and operations"
+roleShort: "Founder-engineer"
 period: "Dec 2025 – present"
 stack:
   - Ruby on Rails 8.1
@@ -13,11 +16,69 @@ stack:
   - .NET 10 + WebView2
   - Python
   - Kamal
+tags: [Rails 8.1, Flutter, Next.js, .NET 10, Kamal]
+built:
+  - "Multi-tenant Rails 8.1 API behind the admin console, staff apps and QR ordering."
+  - "GST invoicing: gapless per-GSTIN, per-year series allocated under a row lock; credit notes for cancellations."
+  - "Plan and entitlements engine: features and limits per plan, per-restaurant overrides, account standing above."
+  - "Solo Lite: offline Flutter POS on Drift/SQLite with Bluetooth ESC/POS printing, plus a Rails-backed online sibling."
+  - "TempleBilling: offline .NET 10 Windows app; donations, darshan, kattalai, panchangam; licensed by machine ID."
+hard: "Invoice numbers under concurrency. Indian GST wants a gap-free sequence per registration per financial year, and a busy restaurant settles from several tills at once. The number is allocated under a row lock at settlement, a failed settlement never burns one, and cancellation is a credit note."
+diagram: bixops
+hero:
+  src: /img/bixops/royale-1280.webp
+  alt: "Restaurant Royale site: the headline 'Run a packed dining room without breaking a sweat' beside a phone showing a table order with burgers and pasta being added."
+  caption: "Restaurant Royale app site (Next.js), screenshot"
+  width: 1280
+  height: 720
+thumb:
+  src: /img/bixops/royale-1280.webp
+  alt: ""
+  caption: "screenshot"
+  width: 1280
+  height: 720
+screens:
+  - src: /img/solo/tables.webp
+    alt: "Solo tables screen: free tables, orders and sales for the day above a grid of numbered tables, one held."
+    caption: "Solo tables (design render)"
+    width: 636
+    height: 1396
+  - src: /img/solo/cart.webp
+    alt: "Solo cart screen: two burgers with quantities, bill details with subtotal, tax and total, and Cancel, Hold and Checkout buttons."
+    caption: "Solo cart (design render)"
+    width: 636
+    height: 1396
+  - src: /img/solo/reports.webp
+    alt: "Solo reports screen."
+    caption: "Solo reports (design render)"
+    width: 636
+    height: 1396
+  - src: /img/solo-lite/billing.webp
+    alt: "Solo Lite billing home in dark theme: an empty bill above a product panel with Favourites, Coffee, Biryani and Juice tabs."
+    caption: "Solo Lite billing (design render)"
+    width: 636
+    height: 1340
+  - src: /img/solo-lite/reports.webp
+    alt: "Solo Lite reports in light theme: a list of bills with numbers, dates, amounts and a running total."
+    caption: "Solo Lite reports (design render)"
+    width: 636
+    height: 1340
+  - src: /img/solo-lite/printer-settings.webp
+    alt: "Solo Lite printer settings in dark theme."
+    caption: "Solo Lite printer settings (design render)"
+    width: 636
+    height: 1340
+  - src: /img/bixops/landing-390.webp
+    alt: "BixOps landing page on a phone: 'Running a restaurant is a lot. BixOps unknots it: billing, kitchen, staff and GST, in one thread', with Book a demo buttons."
+    caption: "BixOps landing (Astro), screenshot"
+    width: 390
+    height: 844
+slots:
+  - "TempleBilling: screenshot to add"
+evidenceNote: "The code is private (it is the product)."
 featured: true
 order: 3
 ---
-
-import Diagram from '../../components/diagrams/Bixops.astro';
 
 ## Context
 
@@ -31,10 +92,6 @@ BixOps is my own company. It makes point-of-sale software for small food busines
 - **Counters are shared and busy.** Staff log in by PIN on a till that is signed in once; a manager's PIN is needed for voids and discounts. Everything that leaks money (discounts, comps, cancellations) is logged.
 - **Not every counter has reliable internet**, so the lite apps work fully offline and the Windows app never needs a connection at all.
 - **A very small team has to run it**: onboarding, plans, per-customer builds and support all need tooling, not manual steps.
-
-## Architecture
-
-<Diagram />
 
 ## What I built
 
@@ -63,7 +120,7 @@ BixOps is my own company. It makes point-of-sale software for small food busines
 
 ### Seeder (May – Jul 2026)
 
-- A **local web app, Python standard library only**, that builds per-customer signed APKs of the full offline Solo app: generate a customer's database from a menu entered in the browser (or restore a `.db` the customer exported), stamp receipt branding per paper width (58 mm / 80 mm) with a live preview that mirrors the printer's wrapping, set a demo expiry and a device lock, then run the Flutter release build. Keeps per-customer state, presets and a build history. A trimmed sibling, seeder_lite, does the same for Solo Lite, where the only per-customer inputs are branding and a few compile-time flags.
+- A **local web app, Python standard library only**, that builds per-customer signed APKs of the full offline Solo app: generate a customer's database from a menu entered in the browser (or restore a `.db` the customer exported), stamp receipt branding per paper width (58 mm / 80 mm) with a live preview that mirrors the printer's wrapping, set a demo expiry and a device lock, then run the Flutter release build. Keeps per-customer state, presets and a build history. A trimmed sibling, seeder_lite, does the same for Solo Lite.
 
 ## The hard part
 
@@ -77,42 +134,5 @@ The entitlements engine was the other design problem worth getting right: keepin
 - Cloud platform: 248-spec backend, eleven-phase admin console at parity, OpenAPI contract.
 - Solo Lite: 52 tests, design-fidelity report; Solo Lite Online: 125 specs plus a 42-check end-to-end script, deployed with Kamal.
 - TempleBilling: installer and single-exe builds with an end-to-end self-test in the release pipeline.
-
-## Stack
-
-Ruby on Rails 8.1 (Devise + JWT, Pundit, Solid Queue/Cache/Cable, Kamal), PostgreSQL, Next.js 16 + React 19 + Tailwind, Flutter with Drift/SQLite and ESC/POS printing, Rails 8 + Vite/React (Solo Lite Online), .NET 10 + WebView2 + SQLite (TempleBilling), Python standard library (Seeder).
-
-## Evidence
-
-Solo Lite screens, rendered from the design files the app is built from (design renders, mock data):
-
-<ul class="screens">
-  <li>
-    <figure>
-      <img src="/img/solo-lite/home_dark.png" alt="Solo Lite home screen in dark theme: an empty bill above a product panel with Favourites, Coffee, Biryani and Juice tabs." width="434" height="914" loading="lazy" />
-      <figcaption>Billing home (design render, dark)</figcaption>
-    </figure>
-  </li>
-  <li>
-    <figure>
-      <img src="/img/solo-lite/reports_light.png" alt="Solo Lite reports screen in light theme: a list of bills with numbers, dates, amounts and a running total." width="434" height="914" loading="lazy" />
-      <figcaption>Reports (design render, light)</figcaption>
-    </figure>
-  </li>
-  <li>
-    <figure>
-      <img src="/img/solo-lite/manage_menu_dark.png" alt="Solo Lite manage-menu screen in dark theme: categories with items, prices, favourite stars and edit and delete buttons." width="434" height="914" loading="lazy" />
-      <figcaption>Manage menu (design render, dark)</figcaption>
-    </figure>
-  </li>
-  <li>
-    <figure>
-      <img src="/img/solo-lite/printer_settings_dark.png" alt="Solo Lite printer settings screen in dark theme." width="434" height="914" loading="lazy" />
-      <figcaption>Printer settings (design render, dark)</figcaption>
-    </figure>
-  </li>
-</ul>
-
-The code is private (it is the product). I can walk through the schema, the invoice sequencer and the entitlements engine in conversation.
 
 {/* TODO: confirm with him: a public BixOps landing URL to link, and a TempleBilling screenshot (the self-test writes screenshots to selftest-out/ on a fresh database). */}

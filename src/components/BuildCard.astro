@@ -1,0 +1,36 @@
+---
+/** A smaller build as a card. Pass `Content` to include the write-up collapsed. */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'builds'>;
+  Content?: any;
+}
+
+const { entry, Content } = Astro.props;
+const b = entry.data;
+const href = b.repo ?? `/builds/#${entry.id}`;
+---
+
+<li class="card build-card" id={entry.id}>
+  <div class="card-body">
+    <p class="meta">{b.period}{b.repo ? ' · open source' : ''}</p>
+    <h3>
+      <a href={href} target={b.repo ? '_blank' : undefined} rel={b.repo ? 'noopener' : undefined}>
+        {b.title}
+      </a>
+    </h3>
+    <p class="outcome">{b.summary}</p>
+    {Content && (
+      <details>
+        <summary>How it works</summary>
+        <div class="body">
+          <Content />
+        </div>
+      </details>
+    )}
+    <ul class="tags" aria-label="Stack">
+      {b.stack.slice(0, 4).map((s) => <li>{s}</li>)}
+    </ul>
+  </div>
+</li>

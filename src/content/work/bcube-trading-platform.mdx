@@ -1,10 +1,13 @@
 ---
 title: "Rebuilding a crypto trading platform on Rails 8 and Vue 3"
 summary: "Led the v2 rebuild of B-Cube.ai from Node.js/Angular to a Rails 8 API and Vue 3 frontend without losing users, subscriptions or live trading: signal fan-out to per-user order execution on 8 exchanges, analytics over AWS Timestream, KYC, subscriptions and on-chain token payments."
+outcome: "Rebuilt a crypto trading platform from Node.js/Angular to Rails 8 and Vue 3 without losing users, subscriptions or live trading; orders on 8 exchanges."
+result: "Re-launched on Rails 8 + Vue 3 with users, subscriptions and trading carried over; execution on 8 exchanges"
 group: platform
 client: "B-Cube.ai (crypto trading platform)"
 via: "as a Francium Tech engineer"
 role: "Lead engineer"
+roleShort: "Lead engineer"
 period: "Sep 2024 – Mar 2025"
 stack:
   - Ruby on Rails 8
@@ -15,10 +18,18 @@ stack:
   - Sumsub
   - Chargebee
   - Etherscan
+tags: [Rails 8, Vue 3, AWS Lambda, Timestream, Chargebee]
+built:
+  - "The Rails 8 API and Vue 3 frontend that replaced the Node.js/Angular stack."
+  - "Migration of legacy FusionAuth users, with 2FA and KYC-gated authorisation in the new system."
+  - "Signal fan-out into per-user executions placing orders through AWS Lambda across 8 exchanges, spot and futures."
+  - "Bot and portfolio analytics as parameterised SQL over AWS Timestream: returns, drawdown, profit factor."
+  - "Sumsub KYC and Chargebee subscriptions with idempotent webhooks; BCUBE ERC-20 payments verified on-chain via Etherscan."
+hard: "Fan-out. One signal becomes one execution per subscribed user, each placing orders on that user's own exchange account through AWS Lambda, across eight exchanges with different APIs and both spot and futures markets. Keeping executions per user is also what makes the analytics honest, and the Sumsub and Chargebee webhooks are idempotent, so a replayed event is never applied twice."
+diagram: bcube
+evidenceNote: "Client product; no public link."
 order: 8
 ---
-
-import Diagram from '../../components/diagrams/Bcube.astro';
 
 ## Context
 
@@ -30,10 +41,6 @@ B-Cube.ai runs trading bots for its users: a signal fires, and orders go out on 
 - **Eight exchanges**, spot and futures, each with its own API and, for Binance, a real-time WebSocket feed.
 - **Regulated edges**: KYC before trading, two-factor authentication, and payment both by card subscription and by the platform's own ERC-20 token.
 - **Analytics on time series** (returns, drawdown, profit factor) across every bot and portfolio.
-
-## Architecture
-
-<Diagram />
 
 ## What I led and built
 
@@ -51,11 +58,3 @@ Fan-out. One signal becomes one execution per subscribed user, each placing orde
 
 - The platform re-launched on Rails 8 and Vue 3 with its users, subscriptions and trading carried over.
 - Order execution on 8 exchanges, spot and futures; analytics over Timestream; KYC, subscriptions and token payments integrated.
-
-## Stack
-
-Ruby on Rails 8, Vue 3 + Vite, PostgreSQL, AWS Lambda, AWS Timestream, Sumsub, Chargebee, Etherscan.
-
-## Evidence
-
-Client product; no public link.

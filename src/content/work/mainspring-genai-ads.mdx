@@ -1,10 +1,13 @@
 ---
 title: "Generative ad copy and banners from campaign plans"
 summary: "A platform that syncs an agency's campaign plans from Airtable and generates ad copy (Gemini with structured outputs, three options per frame) and banner imagery (Stability AI outpainting), then feeds the assets into the designers' tools."
+outcome: "Ad copy (Gemini, structured outputs, three options per frame) and banners (Stability AI outpainting) generated from live Airtable plans and delivered into designers' tools."
+result: "Copy and banners generated per frame from live plans; backend test coverage 60% → 75%"
 group: ai
 client: "Mainspring (creative agency)"
 via: "as a Francium Tech engineer"
 role: "Backend engineer; top backend contributor"
+roleShort: "Backend engineer, top backend contributor"
 period: "Jul 2025 – Nov 2025"
 stack:
   - FastAPI
@@ -14,10 +17,18 @@ stack:
   - Stability AI
   - Airtable
   - React 19 + shadcn
+tags: [FastAPI, Celery, Gemini, Pydantic AI, Stability AI]
+built:
+  - "Retry-safe Celery generation tasks with backoff and per-component status, so a retry never duplicates work."
+  - "Structured-output prompting with Gemini through Pydantic AI: three copy options per frame, validated into typed models."
+  - "Outpaint geometry solver that works out how to extend a source image to each banner size."
+  - "External API delivering finished assets into Figma, After Effects and Photoshop."
+  - "Service-level tests that raised backend coverage from 60% to 75%."
+hard: "Making generation idempotent. A campaign has many frames, each with several components, and model calls fail often enough that retrying a whole frame would burn budget and produce duplicates. Each component carries its own status, each task is safe to re-run, and backoff applies per call, so a retry resumes exactly where the previous attempt stopped."
+diagram: mainspring
+evidenceNote: "Agency-internal tool; no public link."
 order: 5
 ---
-
-import Diagram from '../../components/diagrams/Mainspring.astro';
 
 ## Context
 
@@ -29,10 +40,6 @@ Mainspring is a creative agency that plans ad campaigns in Airtable: each campai
 - **Generation is slow and flaky by nature.** Model calls time out and rate-limit; a banner that is half-generated must not look finished.
 - **Copy has to come back in a fixed shape** (three options per frame, each with its parts), not as free text to be parsed.
 - **The output goes to Figma, After Effects and Photoshop**, so there had to be a clean external API for assets.
-
-## Architecture
-
-<Diagram />
 
 ## What I built
 
@@ -50,11 +57,3 @@ Making generation idempotent. A campaign has many frames and each frame has seve
 
 - Copy and banners generated per frame from live Airtable plans and delivered into the designers' tools.
 - Backend test coverage raised from 60% to 75%.
-
-## Stack
-
-FastAPI, SQLAlchemy/Alembic, Celery + Redis, Google Gemini via Pydantic AI, Stability AI, Airtable, React 19 + shadcn.
-
-## Evidence
-
-Agency-internal tool; no public link.

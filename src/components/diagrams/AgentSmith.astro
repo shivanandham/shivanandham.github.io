@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="Agent Smith architecture"
   caption="A tier-0 orchestrator runs explicit-contract agents (11 agents, 10 workflows, 16 skills) that read a 19-domain knowledge layer before acting. Production data comes only through a governed MCP gateway. The eval harness scores runs on artifacts, and a guard hook gates pull requests (shadow mode first)."
   width={780}

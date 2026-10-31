@@ -28,66 +28,52 @@ const stack: Array<[string, string]> = [
 
 <Base title="About" description="About Shivanandham Sankaranarayanan: Senior Software Engineer in Chennai, Python backend and GenAI systems, 5+ years, usually the sole or lead engineer.">
   <h1>About</h1>
-  <div class="prose">
-    <p class="lede">
-      I am a Senior Software Engineer in Chennai, India. I build production backend, data and AI systems, and I have
-      done so for fintech, SaaS and media clients for more than five years.
-    </p>
-    <p>
-      Since January 2021 I have worked at <strong>Francium Tech</strong> as a consulting engineer embedded in client
-      teams. Every client engagement on this site was delivered in that role: MoneySmart (where I led the AI tooling,
-      the recommendation engine and platform work from November 2022), Teldat (tech lead for a six-engineer RAG team),
-      Golden Set Analytics, Mainspring, Undivided and B-Cube.ai, plus earlier React and Rails work for Teldat, Hybr1d and
-      Soulsearch.
-    </p>
-    <p>
-      Outside client work I build and operate my own products under <a href="/work/bixops-pos/">BixOps</a>, and I
-      keep a few <a href="/builds/">smaller builds</a> public on GitHub.
-    </p>
-
-    <h2>What I am, and what I am not</h2>
-    <p>
-      I am an AI engineer and backend architect. I design retrieval pipelines, agent workflows, evaluation harnesses and
-      the data infrastructure under them, and I own the result from schema design to CI/CD and production support. I use
-      models to build solutions; I tune, integrate and operate them. I do not train novel models, and I will say so if a
-      role needs that.
-    </p>
-
-    <h2>How I work</h2>
-    <ul>
-      <li>Usually the sole or lead engineer on the system, with direct client communication.</li>
-      <li>Architecture first: schema, contracts between components, and the migration path before the code.</li>
-      <li>Verification as part of delivery: test suites, golden-flow evals, shadow-mode rollouts before enforcement.</li>
-      <li>Production ownership: deploys with rollback, monitoring, and fixing the hot spots that only show up live.</li>
-    </ul>
-
-    <h2>Stack</h2>
-    <table class="stack-table">
-      <tbody>
-        {
-          stack.map(([k, v]) => (
-            <tr>
-              <th scope="row">{k}</th>
-              <td>{v}</td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-
-    <h2>Education</h2>
-    <p>
-      B.Tech, Computer Science, Hindustan Institute of Technology and Science, Chennai, 2017–2021. Capstone: a powered
-      wheelchair prototype.
-    </p>
-
-    <h2>Contact</h2>
-    <ul class="links-row">
-      <li><a class="btn primary" href="mailto:rootofshiva@gmail.com">rootofshiva@gmail.com</a></li>
-      <li><a class="btn" href="https://github.com/shivanandham" target="_blank" rel="me noopener">GitHub</a></li>
-      <li><a class="btn" href="https://www.linkedin.com/in/shivanandham" target="_blank" rel="me noopener">LinkedIn</a></li>
-      <li><a class="btn" href="/resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a></li>
-    </ul>
-    <p class="muted">Based in Chennai (IST). I work remotely and can cover US East and EU hours.</p>
+  <div class="about-grid">
+    <div>
+      <p class="avatar" aria-label="Initials S S" role="img">SS</p>
+      <p class="avatar-note">Photo slot: add <code>public/img/me.jpg</code></p>
+    </div>
+    <div class="prose">
+      <p class="lede">
+        Senior Software Engineer in Chennai. I build production backend, data and AI systems, usually as the sole or
+        lead engineer, for more than five years.
+      </p>
+      <p>
+        Since January 2021 I have worked at <strong>Francium Tech</strong>, embedded in client teams: MoneySmart, Teldat,
+        Golden Set Analytics, Mainspring, Undivided and B-Cube.ai. Outside client work I run
+        <a href="/work/bixops-pos/">BixOps</a>, my own POS company, and keep a few <a href="/builds/">builds</a> public.
+      </p>
+      <p>I use models to build solutions: I tune, integrate and operate them. I do not train novel models.</p>
+      <ul class="bullets">
+        <li>Architecture first: schema, contracts, migration path, then code.</li>
+        <li>Verification in delivery: test suites, golden-flow evals, shadow-mode rollouts.</li>
+        <li>Production ownership: deploys with rollback, monitoring, the hot spots that only show up live.</li>
+      </ul>
+      <dl class="facts">
+        <dt>Education</dt>
+        <dd>B.Tech, Computer Science, Hindustan Institute of Technology and Science, 2017–2021</dd>
+        <dt>Hours</dt>
+        <dd>IST; remote, covers US East and EU hours</dd>
+      </dl>
+      <ul class="links-row">
+        <li><a class="btn primary" href="mailto:rootofshiva@gmail.com">rootofshiva@gmail.com</a></li>
+        <li><a class="btn" href="https://github.com/shivanandham" target="_blank" rel="me noopener">GitHub</a></li>
+        <li><a class="btn" href="https://www.linkedin.com/in/shivanandham" target="_blank" rel="me noopener">LinkedIn</a></li>
+        <li><a class="btn" href="/resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a></li>
+      </ul>
+      <details class="more">
+        <summary>Full stack list</summary>
+        <div class="body">
+          <dl class="facts">
+            {stack.map(([k, v]) => (
+              <>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </>
+            ))}
+          </dl>
+        </div>
+      </details>
+    </div>
   </div>
 </Base>

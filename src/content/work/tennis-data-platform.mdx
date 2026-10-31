@@ -1,10 +1,13 @@
 ---
 title: "Tennis data platform for Golden Set Analytics"
 summary: "The data-acquisition and identity-resolution layer behind a tennis scouting product: polite, resilient scraping of six public sources, a two-layer schema with cross-source match identity, and pg_trgm player resolution that auto-routes about 95% of records."
+outcome: "Six scraped sources turned into one source-neutral core of 1M+ players; pg_trgm identity resolution auto-routes about 95% of records and sends ambiguity to review."
+result: "6 sources → one core of 1M+ players; ~95% auto-routed; promotion check ~123 ms → under 1 ms"
 group: platform
 client: "Golden Set Analytics (tennis scouting)"
 via: "as a Francium Tech engineer"
 role: "Backend and data engineer"
+roleShort: "Backend and data engineer"
 period: "Apr 2026 – Aug 2026"
 stack:
   - Python
@@ -14,10 +17,18 @@ stack:
   - Playwright
   - Docker
   - Azure
+tags: [Django, Celery, PostgreSQL, pg_trgm, Playwright]
+built:
+  - "Acquisition across six sources: shared token-bucket limiter, 8 workers at 10–20 req/s, Retry-After backoff, Playwright past Cloudflare and Incapsula."
+  - "Two-layer schema: raw per-source intake promoted into a source-neutral core with orientation-independent match identity."
+  - "Player-identity resolution with pg_trgm and confidence bands: ~95% auto-routed, ambiguous merges queued for review."
+  - "Partial indexes cut the per-row promotion check from ~123 ms to under 1 ms at 800K rows."
+  - "Contributions to the Elo rating and player-trajectory feature layer behind the prediction model."
+hard: "Identity. Two sources list the same match with the players swapped, and the same player as \"J. Smith\", \"Smith, John\" and \"John Smith Jr.\" A naive key misses duplicates; a loose one merges strangers. Match identity ignores player order; player matching uses pg_trgm with confidence bands, so confident results flow through and doubtful pairs go to a human."
+diagram: gsa
+evidenceNote: "Client data platform; no public link."
 order: 7
 ---
-
-import Diagram from '../../components/diagrams/Gsa.astro';
 
 ## Context
 
@@ -29,10 +40,6 @@ Golden Set Analytics scouts tennis players, and its prediction model needs one c
 - **The same match appears in several sources** with players in either order and names spelled differently.
 - **Scale**: the core passed one million players during the engagement, and per-row checks that were fine at 100K rows were not fine at 800K.
 - **Ambiguity cannot be silently resolved.** A wrong merge of two players poisons every downstream feature.
-
-## Architecture
-
-<Diagram />
 
 ## What I built
 
@@ -53,11 +60,3 @@ Performance was the second half of the problem. The promotion step ran a per-row
 - Six sources feeding one source-neutral core, at more than 1M players.
 - About 95% of records auto-routed by identity resolution; the rest reviewed, not guessed.
 - Promotion check: ~123 ms to under 1 ms per row at 800K rows.
-
-## Stack
-
-Python, Django 5 + DRF, Celery + Redis, PostgreSQL (pg_trgm), Playwright, Docker, Azure.
-
-## Evidence
-
-Client data platform; no public link.

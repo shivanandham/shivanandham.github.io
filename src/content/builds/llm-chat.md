@@ -1,6 +1,6 @@
 ---
 title: "Free LLM gateway with provider failover"
-summary: "An OpenAI-compatible gateway that routes across ten free-tier LLM providers, picks the best available model and fails over with cooldowns when one hits its rate limit or quota."
+summary: "OpenAI-compatible gateway over ten free-tier LLM providers: best available model first, failover with cooldowns on rate limits."
 period: "Jun 2026"
 stack:
   - Python

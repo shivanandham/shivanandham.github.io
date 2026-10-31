@@ -1,0 +1,31 @@
+---
+import { experience } from '../data/experience';
+---
+
+<ol class="timeline">
+  {
+    experience.map((e) => (
+      <li class="tl-row">
+        <p class="tl-dates">{e.dates}</p>
+        <div class="tl-body">
+          <h3 class="tl-head">
+            {e.title} <span class="org">· {e.org}{e.via ? ` · ${e.via}` : ''}</span>
+          </h3>
+          <p class="tl-text">{e.text}</p>
+          <div class="tl-foot">
+            <ul class="tags" aria-label="Stack">
+              {e.tags.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+            <span class="links">
+              {e.links.map((l) => (
+                <a href={l.href}>{l.label} →</a>
+              ))}
+            </span>
+          </div>
+        </div>
+      </li>
+    ))
+  }
+</ol>

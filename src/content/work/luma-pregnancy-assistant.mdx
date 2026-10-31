@@ -1,8 +1,11 @@
 ---
 title: "Luma: a pregnancy companion with an AI assistant"
 summary: "A Flutter tracking app with a Node.js/Express backend and an AI chat that triages first, auto-logs symptoms and carries remembered facts into later prompts. Public repository."
+outcome: "Flutter pregnancy companion with a Node.js backend and an AI chat that triages, auto-logs symptoms and remembers facts. Public repo."
+result: "A working app and backend, in a public repository"
 group: product
 role: "Sole developer"
+roleShort: "Sole developer"
 period: "Oct – Nov 2025"
 stack:
   - Flutter
@@ -10,13 +13,23 @@ stack:
   - Prisma
   - PostgreSQL
   - Gemini 2.5 Flash
+tags: [Flutter, Express, Prisma, PostgreSQL, Gemini]
+built:
+  - "Flutter app: trimester-aware dashboard, symptom and weight trackers with charts, appointments, photo journal, local notifications."
+  - "Node.js/Express backend with Prisma over PostgreSQL, self-hosted, with a one-command database deploy script."
+  - "Gemini 2.5 Flash behind the backend proxy: daily checklists and a chat that triages, auto-logs symptoms and recalls facts."
+hard: "Making the chat useful across days rather than per message. The chat extracts symptoms from what the user writes and logs them as tracker entries; facts worth remembering are stored and pulled back into later prompts with the current week. Triage runs before the conversational answer, and every answer carries the medical disclaimer."
+diagram: luma
+slots:
+  - "Home: screenshot to add"
+  - "Tracker: screenshot to add"
+  - "AI chat: screenshot to add"
 links:
   - label: "Source on GitHub"
     href: "https://github.com/shivanandham/pregnancy-assistant"
+featured: true
 order: 9
 ---
-
-import Diagram from '../../components/diagrams/Luma.astro';
 
 ## Context
 
@@ -27,10 +40,6 @@ Luma is a pregnancy companion for one expecting mother: week-by-week progress, s
 - **Single user, no accounts.** The app assumes one user per device, so there is no login, and the design has to stay simple because of that rather than in spite of it.
 - **The model key must never ship in the app.** All AI calls go through the backend.
 - **Medical caution**: the assistant supports and informs; it does not replace a doctor, and its answers say so.
-
-## Architecture
-
-<Diagram />
 
 ## What I built
 
@@ -46,12 +55,4 @@ Making the chat useful across days rather than per message. A pregnancy assistan
 
 A working app and backend, in a public repository.
 
-## Stack
-
-Flutter (Provider, local notifications), Node.js/Express, Prisma, PostgreSQL, Gemini 2.5 Flash.
-
-## Evidence
-
-- [Source on GitHub](https://github.com/shivanandham/pregnancy-assistant)
-
-{/* TODO: confirm with him: app screenshots to add (none in the repo README). */}
+{/* Screenshots: he will supply three; see public/img/luma/README.txt. Add them to `screens` and remove `slots`. */}

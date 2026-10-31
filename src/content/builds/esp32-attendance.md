@@ -1,6 +1,6 @@
 ---
 title: "Biometric attendance terminal on ESP32"
-summary: "A fingerprint attendance device with server-driven enrolment and rollback and per-company device keys, wired to a multi-tenant employee-management API."
+summary: "Fingerprint attendance device with server-driven enrolment and rollback and per-company device keys, wired to a multi-tenant Rails API."
 period: "Mar – Apr 2025"
 stack:
   - ESP32

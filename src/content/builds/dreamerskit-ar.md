@@ -1,6 +1,6 @@
 ---
 title: "DreamersKit: AR video memories (proof of concept)"
-summary: "Point a phone at a printed photo and its linked video plays on top of it, in the browser, with no app to install. Backend image recognition picks the memory; WebAR tracks the photo."
+summary: "Point a phone at a printed photo and its linked video plays on top, in the browser. SIFT + RANSAC recognition, MindAR tracking."
 period: "Oct 2026"
 stack:
   - FastAPI

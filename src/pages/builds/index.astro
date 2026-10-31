@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import BuildCard from '../../components/BuildCard.astro';
 
 const builds = (await getCollection('builds', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 const rendered = await Promise.all(builds.map(async (b) => ({ b, Content: (await render(b)).Content })));
@@ -8,44 +9,8 @@ const rendered = await Promise.all(builds.map(async (b) => ({ b, Content: (await
 
 <Base title="Builds" description="Smaller builds by Shivanandham: an open-source MCP server, a free-tier LLM gateway, an AR video proof of concept, and a fingerprint attendance terminal.">
   <h1>Builds</h1>
-  <p class="lede">
-    Smaller things: open-source tools, proofs of concept and hardware. Each one is finished enough to use, and the
-    public ones link to their source.
-  </p>
-  <ul class="build-list">
-    {
-      rendered.map(({ b, Content }) => (
-        <li id={b.id}>
-          <h2>
-            {b.data.repo ? (
-              <a href={b.data.repo} target="_blank" rel="noopener">
-                {b.data.title}
-              </a>
-            ) : (
-              b.data.title
-            )}
-          </h2>
-          <p class="meta">
-            {b.data.period}
-            {b.data.repo && (
-              <>
-                {' · '}
-                <a href={b.data.repo} target="_blank" rel="noopener">
-                  source on GitHub
-                </a>
-              </>
-            )}
-          </p>
-          <div class="body">
-            <Content />
-          </div>
-          <ul class="tags" aria-label="Stack">
-            {b.data.stack.map((s) => (
-              <li>{s}</li>
-            ))}
-          </ul>
-        </li>
-      ))
-    }
+  <p class="lede">Open-source tools, proofs of concept and hardware. Each is finished enough to use; the public ones link to source.</p>
+  <ul class="cards" style="margin-top:1.5rem">
+    {rendered.map(({ b, Content }) => <BuildCard entry={b} Content={Content} />)}
   </ul>
 </Base>

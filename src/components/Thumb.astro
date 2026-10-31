@@ -1,0 +1,41 @@
+---
+/**
+ * Card thumbnail: the case study's image if it has one, otherwise a mini
+ * diagram (three boxes). A wide card also carries the full diagram, shown
+ * instead of the mini one on large screens (CSS).
+ */
+import type { CollectionEntry } from 'astro:content';
+import Flow from './Flow.astro';
+import DiagramFor from './DiagramFor.astro';
+import { thumbs } from '../data/thumbs';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  wide?: boolean;
+}
+
+const { entry, wide = false } = Astro.props;
+const d = entry.data;
+const mini = thumbs[entry.id];
+const badge = d.thumb ? d.thumb.caption : undefined;
+---
+
+<div class={`thumb${wide ? ' wide' : ''}`}>
+  {
+    d.thumb ? (
+      <img src={d.thumb.src} alt="" width={d.thumb.width} height={d.thumb.height} loading="lazy" decoding="async" />
+    ) : mini ? (
+      <>
+        <div class="mini">
+          <Flow {...mini} compact decorative idSuffix={`-mini-${entry.id}`} />
+        </div>
+        {wide && (
+          <div class="full">
+            <DiagramFor name={d.diagram} compact decorative idSuffix={`-wide-${entry.id}`} />
+          </div>
+        )}
+      </>
+    ) : null
+  }
+  {badge && <span class="thumb-badge">{badge}</span>}
+</div>

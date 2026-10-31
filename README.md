@@ -15,11 +15,13 @@ Node 22.12 or newer. Astro is pinned to 7.3.8 (the last 7.x that runs on Node 22
 
 ## Where things live
 
-- `src/content/work/*.mdx`: case studies. Frontmatter: title, summary, group (`ai` | `product` | `platform`), client, via, role, period, stack, featured, order, links.
-- `src/content/builds/*.md`: smaller builds listed on `/builds/`.
-- `src/components/diagrams/*.astro`: one inline-SVG architecture diagram per case study, drawn with `src/components/Flow.astro` (boxes and arrows on CSS variables, so they follow light and dark mode).
-- `public/img/solo-lite/`: Solo Lite design renders (mock data, labelled as design renders).
+- `src/content/work/*.mdx`: case studies. The frontmatter carries everything shown on load (outcome, result, roleShort, tags, built, hard, diagram, hero/thumb/screens/slots, links, evidenceNote); the MDX body is the long write-up, rendered collapsed under "Full write-up". Word budgets: card outcome ≤30 words, built bullets ≤20 each, hard ≤60, visible page ≤250.
+- `src/content/builds/*.md`: smaller builds (summary ≤25 words; body collapsed on `/builds/`).
+- `src/data/experience.ts`: the home-page timeline (≤40 words per row). `src/data/thumbs.ts`: the three-box mini diagrams used as card thumbnails.
+- `src/components/diagrams/*.astro`: one inline-SVG architecture diagram per case study, drawn with `src/components/Flow.astro` (boxes and arrows on CSS variables, so they follow light and dark mode). `DiagramFor.astro` picks one by key.
+- `public/img/`: `solo/` and `solo-lite/` are design renders with demo data; `bixops/` are screenshots of the landing (Astro) and Restaurant Royale (Next.js) sites; `luma/README.txt` and `templebilling/README.txt` describe the screenshot slots still to fill.
 - `public/resume.pdf`: the current resume.
+- `scripts/wordcount.mjs`: prints visible words per page from `dist/` (run after `npm run build`).
 
 Pages: `/`, `/work/`, `/work/<slug>/`, `/builds/`, `/about/`, `/404`.
 

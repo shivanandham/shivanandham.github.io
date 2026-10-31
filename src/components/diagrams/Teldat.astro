@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="Teldat RAG assistant architecture"
   caption="Ingestion and answering share one PostgreSQL + pgvector store. Celery (Redis broker) runs ingestion; FastAPI serves the React app; LangChain/LangGraph orchestrate retrieval and the LLM calls. Deploys run on GitHub Actions with one-click rollback; Sentry watches production."
   width={720}

@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="Golden Set Analytics data platform architecture"
   caption="Celery scrapers share one token-bucket limiter and recover from anti-bot blocks with headless Playwright. Each source lands in its own raw intake tables, then promotion builds a source-neutral core with cross-source match identity and pg_trgm player resolution. Django 5 + DRF serves the result; the prediction model itself was built by teammates."
   width={730}

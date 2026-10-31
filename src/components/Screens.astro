@@ -1,0 +1,39 @@
+---
+/** Screenshot gallery plus labelled empty slots for images still to come. */
+interface Image {
+  src: string;
+  alt: string;
+  caption: string;
+  width: number;
+  height: number;
+}
+
+interface Props {
+  screens: Image[];
+  slots?: string[];
+}
+
+const { screens, slots = [] } = Astro.props;
+---
+
+{
+  (screens.length > 0 || slots.length > 0) && (
+    <ul class="screens">
+      {screens.map((s) => (
+        <li class={s.width > s.height ? 'landscape' : undefined}>
+          <figure>
+            <img src={s.src} alt={s.alt} width={s.width} height={s.height} loading="lazy" decoding="async" />
+            <figcaption>{s.caption}</figcaption>
+          </figure>
+        </li>
+      ))}
+      {slots.map((label) => (
+        <li>
+          <div class="slot" role="img" aria-label={label}>
+            {label}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}

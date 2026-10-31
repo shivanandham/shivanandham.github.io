@@ -1,0 +1,35 @@
+---
+/** Renders the architecture diagram for a case study by key. */
+import AgentSmith from './diagrams/AgentSmith.astro';
+import Teldat from './diagrams/Teldat.astro';
+import Bixops from './diagrams/Bixops.astro';
+import Luma from './diagrams/Luma.astro';
+import Mainspring from './diagrams/Mainspring.astro';
+import Personalize from './diagrams/Personalize.astro';
+import Gsa from './diagrams/Gsa.astro';
+import Bcube from './diagrams/Bcube.astro';
+import Undivided from './diagrams/Undivided.astro';
+
+interface Props {
+  name: 'agent-smith' | 'teldat' | 'bixops' | 'luma' | 'mainspring' | 'personalize' | 'gsa' | 'bcube' | 'undivided';
+  compact?: boolean;
+  decorative?: boolean;
+  idSuffix?: string;
+}
+
+const { name, compact = false, decorative = false, idSuffix = '' } = Astro.props;
+const map = {
+  'agent-smith': AgentSmith,
+  teldat: Teldat,
+  bixops: Bixops,
+  luma: Luma,
+  mainspring: Mainspring,
+  personalize: Personalize,
+  gsa: Gsa,
+  bcube: Bcube,
+  undivided: Undivided,
+} as const;
+const Component = map[name];
+---
+
+<Component compact={compact} decorative={decorative} idSuffix={idSuffix} />

@@ -1,10 +1,13 @@
 ---
 title: "RAG product assistant for Teldat"
 summary: "Grounded answers to product and solution questions from Teldat's documentation, with a citation on every answer, plus one-click PPT, Excel and DOCX sales documents from the same knowledge base. Tech lead for a six-engineer team."
+outcome: "Grounded answers from seven documentation sources, a citation on every answer, plus PPT, Excel and DOCX sales documents."
+result: "In production; 7 source types ingested; a citation on every answer; 429 automated tests"
 group: ai
 client: "Teldat (networking vendor, Spain)"
 via: "as a Francium Tech engineer"
 role: "Tech lead, team of six: architecture, delivery, production operations"
+roleShort: "Tech lead, team of six"
 period: "Oct 2025 – Mar 2026"
 stack:
   - FastAPI
@@ -19,11 +22,19 @@ stack:
   - React 19
   - GitHub Actions
   - Sentry
+tags: [FastAPI, pgvector, LangChain, LangGraph, Celery]
+built:
+  - "Ingestion for seven source types, orchestrated with Celery, with citation tracking carried through to every answer."
+  - "Retrieval tuning and hallucination controls: grounded link suggestions only, manual knowledge injection for the gaps."
+  - "PPT, Excel and DOCX document generation from the same knowledge base, stored on GCS."
+  - "JWT auth with refresh-token rotation and fine-grained RBAC."
+  - "Production readiness: GitHub Actions deploys with one-click rollback, Sentry, Celery/Flower tuning, a connection-pool leak fix."
+hard: "Retrieval found the right passages, but the model still volunteered plausible URLs and specifications that existed nowhere in the sources. The fix was a set of controls, not one prompt: link suggestions grounded in what was retrieved, citations back to the source chunks, manual knowledge injection for documentation gaps, and retrieval tuned so the grounded set was worth citing."
+diagram: teldat
+evidenceNote: "Client product behind a login; no public link."
 featured: true
 order: 2
 ---
-
-import Diagram from '../../components/diagrams/Teldat.astro';
 
 ## Context
 
@@ -35,10 +46,6 @@ Teldat is a networking hardware vendor in Spain with a large body of product doc
 - **Every answer must cite its source.** A networking vendor cannot have an assistant inventing specifications or links.
 - **A real multi-user product**: authentication, roles and permissions, visitor analytics, and an admin surface for the people maintaining the knowledge base.
 - **Production from day one**: deploys, rollback, monitoring and the usual list of things that only break under load.
-
-## Architecture
-
-<Diagram />
 
 ## What I built
 
@@ -60,13 +67,5 @@ The other hard part was operational. A database connection-pool leak showed up i
 - In production, with the team's deploys, rollback and monitoring owned by me.
 - 7 source types ingested; a citation on every answer; PPT, Excel and DOCX generation from the same knowledge base.
 - 429 automated tests in the suite.
-
-## Stack
-
-FastAPI, PostgreSQL + pgvector, SQLAlchemy/Alembic, LangChain, LangGraph, Celery + Redis, OpenAI, Mistral, GCS, React 19, GitHub Actions, Sentry.
-
-## Evidence
-
-Client product behind a login; no public link.
 
 {/* TODO: confirm with him: whether any UI screenshot can be shown after blurring. */}

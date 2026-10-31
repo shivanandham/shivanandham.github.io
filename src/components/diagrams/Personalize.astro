@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="AWS Personalize recommendation pipeline"
   caption="Training data flows Redshift → S3 → Personalize dataset imports; live events arrive through Kinesis Firehose. Schedules run daily incremental refreshes and full retrains. Serving goes through Lambda, with a business-rule layer applied on top of the model output and GrowthBook deciding A/B variants."
   width={720}

@@ -1,16 +1,26 @@
 ---
 title: "RAG Q&A assistant for parents (Undivided)"
 summary: "A question-answering assistant for parents of children with disabilities: retrieval and re-ranking over pgvector, feedback loops on answers, and accessible, SEO-focused Next.js pages."
+outcome: "A question-answering assistant for parents of children with disabilities: retrieval and re-ranking over pgvector, feedback loops on answers, accessible SEO-focused Next.js pages."
+result: "Shipped as part of the Undivided product; the same shape later became the Teldat assistant"
 group: ai
 client: "Undivided (parent-support platform, US)"
 via: "as a Francium Tech engineer"
 role: "Backend engineer"
+roleShort: "Backend engineer"
 period: "Mar 2025 – Nov 2025"
 stack:
   - FastAPI
   - PostgreSQL + pgvector
   - OpenAI / Azure OpenAI
   - Next.js
+tags: [FastAPI, pgvector, OpenAI, Next.js]
+built:
+  - "Retrieval and re-ranking over pgvector, served from a FastAPI backend with OpenAI and Azure OpenAI models."
+  - "Feedback loops on answers."
+  - "Accessible, SEO-focused Next.js pages for the public side of the product."
+diagram: undivided
+evidenceNote: "Client product; no public link. My first production RAG system."
 order: 6
 ---
 
@@ -27,7 +37,3 @@ Undivided supports parents of children with disabilities in the United States. P
 ## Outcome
 
 Shipped as part of the Undivided product. The same retrieval-and-re-ranking shape, with stronger grounding controls, went on to become the [Teldat assistant](/work/teldat-rag-assistant/).
-
-## Stack
-
-FastAPI, PostgreSQL + pgvector, OpenAI / Azure OpenAI, Next.js.

@@ -1,6 +1,6 @@
 ---
 title: "multi-database-mcp"
-summary: "An open-source MCP server that gives AI coding tools one connection to several PostgreSQL databases instead of one server per database. Published on npm, MIT."
+summary: "One MCP server for several PostgreSQL databases, switched from chat. Nine tools, on npm, MIT."
 period: "Oct 2025 – present"
 stack:
   - Node.js

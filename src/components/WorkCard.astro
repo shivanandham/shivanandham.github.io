@@ -1,22 +1,25 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import Thumb from './Thumb.astro';
 
 interface Props {
   entry: CollectionEntry<'work'>;
-  /** Show only the first N stack items as tags. */
-  tagLimit?: number;
+  wide?: boolean;
 }
 
-const { entry, tagLimit = 5 } = Astro.props;
+const { entry, wide = false } = Astro.props;
 const d = entry.data;
-const context = [d.client, d.via].filter(Boolean).join(' · ');
+const who = d.client ? d.client.split(' (')[0] : 'Own product';
 ---
 
-<li class="card">
-  <h3><a href={`/work/${entry.id}/`}>{d.title}</a></h3>
-  <p class="meta">{d.role}{context ? ` · ${context}` : ''} · {d.period}</p>
-  <p>{d.summary}</p>
-  <ul class="tags" aria-label="Stack">
-    {d.stack.slice(0, tagLimit).map((s) => <li>{s}</li>)}
-  </ul>
+<li class={`card${wide ? ' wide' : ''}`}>
+  <Thumb entry={entry} wide={wide} />
+  <div class="card-body">
+    <p class="meta">{who} · {d.period}{d.slots.length > 0 && !d.thumb ? ' · screenshots to add' : ''}</p>
+    <h3><a href={`/work/${entry.id}/`}>{d.title}</a></h3>
+    <p class="outcome">{d.outcome}</p>
+    <ul class="tags" aria-label="Stack">
+      {d.tags.map((s) => <li>{s}</li>)}
+    </ul>
+  </div>
 </li>

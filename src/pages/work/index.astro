@@ -6,31 +6,15 @@ import WorkCard from '../../components/WorkCard.astro';
 const all = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 
 const groups = [
-  {
-    key: 'ai',
-    title: 'AI systems',
-    intro:
-      'Retrieval, agents, evaluation and recommendation systems that run in production. I use models to build solutions; I do not train them.',
-  },
-  {
-    key: 'product',
-    title: 'Products I own',
-    intro: 'Things I built end to end and operate myself, outside client work.',
-  },
-  {
-    key: 'platform',
-    title: 'Backend and platform',
-    intro: 'Data platforms and rebuilds where the hard part was the architecture, the schema and the migration.',
-  },
+  { key: 'ai', title: 'AI systems', intro: 'Retrieval, agents, evaluation and recommendation systems in production.' },
+  { key: 'product', title: 'Products I own', intro: 'Built end to end and operated by me, outside client work.' },
+  { key: 'platform', title: 'Backend and platform', intro: 'Data platforms and rebuilds where the schema and the migration were the hard part.' },
 ] as const;
 ---
 
 <Base title="Work" description="Case studies: AI systems, products I own, and backend and platform work by Shivanandham Sankaranarayanan.">
   <h1>Work</h1>
-  <p class="lede">
-    Case studies, each with the context, the constraints, an architecture diagram, what I personally built, the hard part
-    and the outcome. Client engagements were delivered as a Francium Tech engineer embedded in the client's team.
-  </p>
+  <p class="lede">Nine case studies. Client work was delivered as a Francium Tech engineer embedded in the client's team.</p>
   <nav aria-label="Groups">
     <ul class="links-row">
       {groups.map((g) => <li><a class="btn" href={`#${g.key}`}>{g.title}</a></li>)}
@@ -45,7 +29,7 @@ const groups = [
         <section class="group" id={g.key} aria-labelledby={`${g.key}-h`}>
           <h2 id={`${g.key}-h`}>{g.title}</h2>
           <p class="intro">{g.intro}</p>
-          <ul class="card-grid">
+          <ul class="cards three">
             {entries.map((entry) => (
               <WorkCard entry={entry} />
             ))}

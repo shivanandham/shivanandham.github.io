@@ -1,0 +1,29 @@
+---
+import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
+---
+
+<Flow
+  title="Undivided RAG assistant architecture"
+  caption="Parents ask through Next.js pages; FastAPI retrieves and re-ranks over pgvector, answers with OpenAI or Azure OpenAI models, and records feedback on each answer."
+  width={720}
+  height={300}
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
+  nodes={[
+    { id: 'user', kind: 'user', x: 20, y: 40, w: 180, lines: ['Parents', 'Next.js pages (accessible, SEO)'] },
+    { id: 'api', x: 270, y: 40, w: 180, lines: ['FastAPI', 'question → answer'] },
+    { id: 'rag', x: 520, y: 40, w: 180, lines: ['Retrieve + re-rank', 'curated knowledge base'] },
+    { id: 'pg', kind: 'store', x: 520, y: 190, w: 180, lines: ['PostgreSQL + pgvector', 'embeddings'] },
+    { id: 'llm', kind: 'ext', x: 270, y: 190, w: 180, h: 48, lines: ['OpenAI · Azure OpenAI'] },
+    { id: 'fb', kind: 'store', x: 20, y: 190, w: 180, h: 48, lines: ['Feedback on answers'] },
+  ]}
+  edges={[
+    { from: 'user', to: 'api', label: 'question' },
+    { from: 'api', to: 'rag' },
+    { from: 'rag', to: 'pg', label: 'top-k' },
+    { from: 'rag', to: 'llm', label: 'grounded prompt' },
+    { from: 'user', to: 'fb', dashed: true, label: 'rate answer' },
+  ]}
+/>

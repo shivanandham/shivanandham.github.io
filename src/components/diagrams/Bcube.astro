@@ -1,8 +1,12 @@
 ---
 import Flow from '../Flow.astro';
+const { compact = false, decorative = false, idSuffix = '' } = Astro.props;
 ---
 
 <Flow
+  compact={compact}
+  decorative={decorative}
+  idSuffix={idSuffix}
   title="B-Cube.ai v2 architecture"
   caption="The Rails 8 API replaced the Node.js/Angular backend; legacy FusionAuth users were migrated and authorisation is gated by 2FA and KYC. Trading signals fan out into per-user executions that place orders through AWS Lambda on 8 exchanges. Analytics run as parameterised SQL over AWS Timestream. KYC, subscriptions and token payments arrive as idempotent webhooks and on-chain checks."
   width={720}

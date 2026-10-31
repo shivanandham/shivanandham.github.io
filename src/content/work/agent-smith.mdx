@@ -1,10 +1,13 @@
 ---
 title: "Agent Smith: an AI-native engineering platform"
 summary: "A control plane where engineers drive Claude Code agents from a one-line feature request to reviewed, tested pull requests across 50+ service repositories. Adopted by a ~20-engineer team."
+outcome: "A one-line feature request becomes reviewed, tested pull requests across 50+ repositories. Adopted by a ~20-engineer team."
+result: "Adopted by ~20 engineers across 50+ repos; PR gating enforced after a shadow-mode period"
 group: ai
 client: "MoneySmart (fintech, Singapore and Hong Kong)"
 via: "as a Francium Tech engineer"
 role: "Lead engineer: design and build"
+roleShort: "Lead engineer, design and build"
 period: "Feb 2026 – present"
 stack:
   - Claude Code (agents, skills, hooks, workflows)
@@ -15,11 +18,19 @@ stack:
   - Nuxt 3
   - Kafka
   - Redash · Sentry · Datadog · CircleCI · Cloudflare · Playwright
+tags: [Claude Code, MCP, LLM evals, Rails, Kafka]
+built:
+  - "Multi-agent workflow: research, planning, implementation, review and QA agents; 11 agents, 10 workflows, 16 skills."
+  - "A 19-domain knowledge layer across the Rails APIs, Nuxt frontends and Kafka flows, read before any change."
+  - "Evaluation harness judging runs on artifacts (gate ledgers, traces, gh call logs), plus a 40-prompt triage eval."
+  - "PR gating via a guard hook, shipped in shadow mode first, enforced once proven."
+  - "Governed MCP access to 12 production surfaces (Redash, Sentry, Datadog, CircleCI and more) with telemetry and guardrails."
+hard: "An agent can narrate success while the pull request is wrong or the tests never ran. So the harness scores what a run leaves behind: the gate ledger, the session trace and the gh calls actually made, never the assistant's own account. The same caution shaped rollout: the guard hook ran in shadow mode before it could block anything."
+diagram: agent-smith
+evidenceNote: "Internal tooling at a client; no public link. Happy to walk through the agent contracts and the eval harness."
 featured: true
 order: 1
 ---
-
-import Diagram from '../../components/diagrams/AgentSmith.astro';
 
 ## Context
 
@@ -31,10 +42,6 @@ MoneySmart runs a financial-products marketplace in Singapore and Hong Kong on 5
 - **The output is a pull request.** Tests, review and CI have to pass; the agent's own description of what it did does not count.
 - **Agents need production data**, from Redash queries to Sentry errors and CircleCI runs, but they cannot be given raw credentials or unlimited tool access.
 - **Trust had to be earned.** Twenty engineers would not accept a gate on their pull requests that broke their flow on day one.
-
-## Architecture
-
-<Diagram />
 
 ## What I built
 
@@ -53,13 +60,5 @@ Evaluating an agent by what it says is unreliable: a run can narrate success whi
 - Adopted by the ~20-engineer team for work across 50+ repositories.
 - 11 agents, 10 workflows, 16 skills, 19 knowledge domains, 12 governed MCP surfaces, a 40-prompt triage eval.
 - PR gating enforced after a shadow-mode period rather than imposed cold.
-
-## Stack
-
-Claude Code (agents, skills, hooks, workflows), MCP, Python, Ruby on Rails, Nuxt 3, Kafka; MCP surfaces on Redash, Sentry, Datadog, CircleCI, Cloudflare and Playwright.
-
-## Evidence
-
-Internal tooling at a client, so there is no public link. I am happy to walk through the agent contracts, the eval harness and the guard-hook rollout in conversation.
 
 {/* TODO: confirm with him: any screenshot or trace excerpt that is safe to show after redaction. */}
