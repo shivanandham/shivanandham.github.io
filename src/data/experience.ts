@@ -20,7 +20,7 @@ export const experience: Engagement[] = [
     via: 'via Francium Tech',
     dates: 'Nov 2022 – present',
     title: 'Lead engineer',
-    text: 'Led Agent Smith (Claude Code agents, ~20 engineers, 50+ repos) and the AWS Personalize recommendation engine for a financial-products marketplace.',
+    text: 'Led Agent Smith (Claude Code agents, ~45 developers, 50+ repos) and the AWS Personalize recommendation engine for a financial-products marketplace.',
     tags: ['Claude Code', 'MCP', 'AWS Personalize', 'Rails', 'Kafka'],
     links: [
       { label: 'Agent Smith', href: '/work/agent-smith/' },

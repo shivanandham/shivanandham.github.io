@@ -1,8 +1,8 @@
 ---
 title: "Agent Smith: an AI-native engineering platform"
-summary: "A control plane where engineers drive Claude Code agents from a one-line feature request to reviewed, tested pull requests across 50+ service repositories. Adopted by a ~20-engineer team."
-outcome: "A one-line feature request becomes reviewed, tested pull requests across 50+ repositories. Adopted by a ~20-engineer team."
-result: "Adopted by ~20 engineers across 50+ repos; PR gating enforced after a shadow-mode period"
+summary: "A control plane where engineers drive Claude Code agents from a one-line feature request to reviewed, tested pull requests across 50+ service repositories. Adopted by ~45 developers."
+outcome: "A one-line feature request becomes reviewed, tested pull requests across 50+ repositories. Adopted by ~45 developers."
+result: "Adopted by ~45 developers across 50+ repos; PR gating enforced after a shadow-mode period"
 group: ai
 client: "MoneySmart (fintech, Singapore and Hong Kong)"
 via: "as a Francium Tech engineer"
@@ -34,14 +34,14 @@ order: 1
 
 ## Context
 
-MoneySmart runs a financial-products marketplace in Singapore and Hong Kong on 50+ service repositories: Rails APIs, Nuxt frontends and Kafka event flows, maintained by a team of about twenty engineers. The team wanted AI coding agents that produce reviewable, tested pull requests rather than chat transcripts that a human still has to turn into code. I led the design and build of that platform, Agent Smith, from February 2026, as a Francium Tech engineer embedded in the team.
+MoneySmart runs a financial-products marketplace in Singapore and Hong Kong on 50+ service repositories: Rails APIs, Nuxt frontends and Kafka event flows, worked on by about 45 developers. The team wanted AI coding agents that produce reviewable, tested pull requests rather than chat transcripts that a human still has to turn into code. I led the design and build of that platform, Agent Smith, from February 2026, as a Francium Tech engineer embedded in the team.
 
 ## Constraints
 
 - **Many repositories, many conventions.** An agent that works on one Rails API is useless if it ignores the Nuxt frontend or the Kafka contracts on either side of a change.
 - **The output is a pull request.** Tests, review and CI have to pass; the agent's own description of what it did does not count.
 - **Agents need production data**, from Redash queries to Sentry errors and CircleCI runs, but they cannot be given raw credentials or unlimited tool access.
-- **Trust had to be earned.** Twenty engineers would not accept a gate on their pull requests that broke their flow on day one.
+- **Trust had to be earned.** Forty-five developers would not accept a gate on their pull requests that broke their flow on day one.
 
 ## What I built
 
@@ -57,7 +57,7 @@ Evaluating an agent by what it says is unreliable: a run can narrate success whi
 
 ## Outcome
 
-- Adopted by the ~20-engineer team for work across 50+ repositories.
+- Adopted by ~45 developers for work across 50+ repositories.
 - 11 agents, 10 workflows, 16 skills, 19 knowledge domains, 12 governed MCP surfaces, a 40-prompt triage eval.
 - PR gating enforced after a shadow-mode period rather than imposed cold.
 
